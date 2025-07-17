@@ -381,14 +381,16 @@ section {
         text-align: center;
         min-height: 100vh;
         padding: 0 5%;
-        padding-top: 90px; /* Matches navbar height */
+        padding-top: 90px;
+        /* Matches navbar height */
         box-sizing: border-box;
         position: relative;
     }
 
     body.homepage .hero-content {
         padding: 1rem;
-        margin-top: 40px; /* Shift content below navbar */
+        margin-top: 40px;
+        /* Shift content below navbar */
     }
 
     body.homepage .hero-logo {
@@ -421,7 +423,7 @@ section {
     max-width: 500px;
     height: auto;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .about-image {
@@ -2347,17 +2349,18 @@ footer {
     /* Show mobile navigation when active */
     .mobile-nav-links {
         display: none;
-        /* Hidden by default */
         position: fixed;
-        top: 90px;
+        top: 0;
         right: 0;
         width: 70%;
-        height: calc(100vh - 90px);
+        height: 100vh;
+        padding-top: 90px;
+        /* account for fixed navbar */
         background: white;
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        padding: 2rem 0;
+        padding-bottom: 2rem;
         transform: translateX(100%);
         transition: transform 0.3s ease;
         box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
@@ -2415,9 +2418,18 @@ footer {
 }
 
 @media (max-width: 768px) {
-  .cart-section {
-    padding-top: 120px !important;
-  }
+    .cart-section {
+        padding-top: 120px !important;
+    }
 }
 
-
+@media (max-width: 768px) {
+    .mobile-nav-links {
+        top: 70px;
+        /* Bring the menu higher */
+        height: calc(100vh - 70px);
+        /* Adjust height to match new top */
+        overflow-y: auto;
+        /* Enable scrolling if content overflows */
+    }
+}
