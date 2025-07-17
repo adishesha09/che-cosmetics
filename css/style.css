@@ -516,11 +516,11 @@ section {
 
     .hero {
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start; /* Don't take full height */
         align-items: center;
         text-align: center;
-        padding-top: 0; /* Remove extra top spacing */
-        min-height: calc(100vh - 100px); /* Adjust for fixed header height */
+        padding-top: 120px; /* Enough space below sticky header */
+        padding-bottom: 60px; /* Add breathing room if needed */
     }
 
     .hero-content {
