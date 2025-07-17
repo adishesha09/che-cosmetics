@@ -516,13 +516,24 @@ section {
 
     .hero {
         flex-direction: column;
+        justify-content: center;
+        align-items: center;
         text-align: center;
-        padding-top: 150px;
+        padding-top: 0; /* Remove extra top spacing */
+        min-height: calc(100vh - 100px); /* Adjust for fixed header height */
     }
 
     .hero-content {
-        padding-right: 0;
-        margin-bottom: 3rem;
+        padding: 1rem;
+        margin: 0 auto;
+    }
+
+    .hero-logo {
+        margin-bottom: 1rem;
+    }
+
+    .cta-button {
+        margin-top: 1rem;
     }
 
     .product-highlight {
