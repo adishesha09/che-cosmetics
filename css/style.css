@@ -373,6 +373,33 @@ section {
     background-color: var(--primary-color);
 }
 
+@media (max-width: 768px) {
+    body.homepage .hero {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 100vh;
+        padding: 0 5%;
+        padding-top: 90px; /* Matches navbar height */
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    body.homepage .hero-content {
+        padding: 1rem;
+        margin-top: 40px; /* Shift content below navbar */
+    }
+
+    body.homepage .hero-logo {
+        margin-bottom: 1rem;
+    }
+
+    body.homepage .cta-button {
+        margin-top: 1rem;
+    }
+}
+
 /* About Section */
 .about {
     display: flex;
@@ -516,24 +543,13 @@ section {
 
     .hero {
         flex-direction: column;
-        justify-content: flex-start; /* Don't take full height */
-        align-items: center;
         text-align: center;
-        padding-top: 120px; /* Enough space below sticky header */
-        padding-bottom: 60px; /* Add breathing room if needed */
+        padding-top: 150px;
     }
 
     .hero-content {
-        padding: 1rem;
-        margin: 0 auto;
-    }
-
-    .hero-logo {
-        margin-bottom: 1rem;
-    }
-
-    .cta-button {
-        margin-top: 1rem;
+        padding-right: 0;
+        margin-bottom: 3rem;
     }
 
     .product-highlight {
