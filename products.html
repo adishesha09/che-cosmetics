@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CHE COSMETICS products page - premium beauty collection">
+    <meta name="keywords"
+        content="CHE COSMETICS products, South African makeup, beauty products, lipgloss, lipscrub, bodyscrub, face cream">
+    <title>Our Products | CHE COSMETICS</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://www.checosmetics.co.za/products" />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="images/lipstick.png">
+
+    <!-- OpenGraph/Twitter Meta -->
+    <meta property="og:title" content="Our Products | CHE COSMETICS">
+    <meta property="og:description"
+        content="Discover our premium product collection - lipgloss, lipscrub, bodyscrub and face cream">
+    <meta property="og:url" content="https://www.checosmetics.co.za/products">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://www.checosmetics.co.za/images/hero-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div class="loader">
+        <div class="loader-circle"></div>
+        <div class="loader-logo">
+            <img src="images/che-cosmetics-logo.png" alt="CHE COSMETICS Loading">
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <header>
+        <nav>
+            <!-- Desktop Left Links -->
+            <ul class="nav-links desktop-left">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="products.html"><i class="fas fa-shopping-bag"></i> Products</a></li>
+            </ul>
+
+            <!-- Logo -->
+            <div class="logo">
+                <a href="index.html"><img src="images/che-cosmetics-logo.png" alt="CHE COSMETICS Logo"></a>
+            </div>
+
+            <!-- Desktop Right Links -->
+            <ul class="nav-links desktop-right">
+                <li><a href="values.html"><i class="fas fa-heart"></i> Values</a></li>
+                <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="shopping-cart.html" class="cart-link"><i class="fas fa-shopping-cart"></i> Cart (<span
+                            class="cart-count">0</span>)</a></li>
+            </ul>
+
+            <!-- Mobile Menu (Hidden by default) -->
+            <ul class="mobile-nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="products.html"><i class="fas fa-shopping-bag"></i> Products</a></li>
+                <li><a href="values.html"><i class="fas fa-heart"></i> Values</a></li>
+                <li><a href="blogs.html"><i class="fas fa-blog"></i> Blog</a></li>
+                <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="shopping-cart.html" class="cart-link"><i class="fas fa-shopping-cart"></i> Cart (<span
+                            class="cart-count">0</span>)</a></li>
+            </ul>
+
+            <!-- Burger Menu -->
+            <div class="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Products Section -->
+        <section class="products-section">
+            <div class="container">
+                <h2 class="section-title"><i class="fas fa-shopping-bag"></i> Our Products</h2>
+
+                <div class="products-grid">
+                    <!-- Lipgloss Product (merged) -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="images/lipgloss.jpg" alt="CHE Lipgloss" class="main-product-image">
+                            <div class="product-carousel" style="display:none;">
+                                <img src="images/lipgloss-pink.jpg" alt="Ruby Red Lipgloss">
+                                <img src="images/lipgloss-lavender.jpg" alt="Digital Lavender Lipgloss">
+                            </div>
+                        </div>
+                        <div class="product-details">
+                            <h3>Lipgloss (3 mililitres)</h3>
+                            <p class="price">125.00</p>
+                            <p class="special-price"><i class="fas fa-tag"></i> Special: Buy 2 for R200 (Save R50)</p>
+                            <div class="color-selector">
+                                <label>Select Color:</label>
+                                <div class="color-options">
+                                    <input type="radio" id="lipgloss-ruby" name="lipgloss-color" value="Ruby Red"
+                                        checked>
+                                    <label for="lipgloss-ruby">Digital Lavender</label>
+                                    <input type="radio" id="lipgloss-lavender" name="lipgloss-color"
+                                        value="Digital Lavender">
+                                    <label for="lipgloss-lavender">Ruby Red</label>
+                                </div>
+                            </div>
+                            <div class="product-description">
+                                <h4>Ingredients:</h4>
+                                <p><strong>Base:</strong> Beeswax, Sweet Almond Oil, Shea Butter, Vitamin E, Caster Oil,
+                                    Coconut Oil</p>
+                                <p><strong>Colourant:</strong> <span class="color-details">Ruby Red colourant, Pink
+                                        Glitter, Rose Gold Lustre consumable Dusting Colourant</span></p>
+                                <p><strong>Essence:</strong> <span class="essence-details">Strawberry</span></p>
+                            </div>
+                            <button class="cta-button add-to-cart" data-id="lipgloss" data-name="CHE Lipgloss"
+                                data-price="125.00" data-image="lipgloss.jpg">
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Lipscrub Product (merged) -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="images/lipscrub.jpg" alt="CHE Lipscrub" class="main-product-image">
+                            <div class="product-carousel" style="display:none;">
+                                <img src="images/lipscrub-pink.jpg" alt="Baby Pink Lipscrub">
+                                <img src="images/lipscrub-blue.jpg" alt="Sky Blue Lipscrub">
+                            </div>
+                        </div>
+                        <div class="product-details">
+                            <h3>Lipscrub (30 grams)</h3>
+                            <p class="price">150.00</p>
+                            <p class="special-price"><i class="fas fa-tag"></i> Special: Buy 2 for R250 (Save R50)</p>
+                            <div class="color-selector">
+                                <label>Select Color:</label>
+                                <div class="color-options">
+                                    <input type="radio" id="lipscrub-pink" name="lipscrub-color" value="Baby Pink"
+                                        checked>
+                                    <label for="lipscrub-pink">Baby Pink</label>
+                                    <input type="radio" id="lipscrub-blue" name="lipscrub-color" value="Sky Blue">
+                                    <label for="lipscrub-blue">Sky Blue</label>
+                                </div>
+                            </div>
+                            <div class="product-description">
+                                <h4>Ingredients:</h4>
+                                <p><strong>Base:</strong> Versagel Base, Cocoa Butter, Jojoba oil, Caster Oil, Vitamin
+                                    E, Caster Sugar, Cane Sugar</p>
+                                <p><strong>Colourant:</strong> <span class="color-details">Baby Pink</span></p>
+                                <p><strong>Essence:</strong> <span class="essence-details">Bubble-gum</span></p>
+                            </div>
+                            <button class="cta-button add-to-cart" data-id="lipscrub" data-name="CHE Lipscrub"
+                                data-price="150.00" data-image="lipscrub.jpg">
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bodyscrub Product (updated with carousel) -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="images/bodyscrub.jpg" alt="Electric Pink & Orange Bodyscrub"
+                                class="main-product-image">
+                            <div class="product-carousel" style="display:none;">
+                                <img src="images/bodyscrub-1.jpg" alt="Electric Pink & Orange Bodyscrub">
+                            </div>
+                        </div>
+                        <div class="product-details">
+                            <h3>Electric Bodyscrub (80 mililitres)</h3>
+                            <p class="price">180.00</p>
+                            <p class="special-price"><i class="fas fa-tag"></i> Special: Buy 2 for R300 (Save R60)</p>
+                            <div class="product-description">
+                                <h4>Ingredients:</h4>
+                                <p>Cane Sugar, Jojoba Oil, Shea Butter, Sweet Almond Oil, Baobab Oil, Marula Oil, Cocoa
+                                    Seed Butter, Glyceryl Stearate, Stearic Acid</p>
+                                <p><strong>Colourant:</strong> Electric Pink & Electric Orange colourant, Orange
+                                    consumable Glitter</p>
+                                <p><strong>Essence:</strong> Orange</p>
+                            </div>
+                            <button class="cta-button add-to-cart" data-id="bodyscrub" data-name="Electric Bodyscrub"
+                                data-price="180.00" data-image="bodyscrub.jpg">
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Face Cream Product (updated with carousel) -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="images/face-cream.jpg" alt="Nourishing Face Cream" class="main-product-image">
+                            <div class="product-carousel" style="display:none;">
+                                <img src="images/face-cream-1.jpg" alt="Nourishing Face Cream">
+                            </div>
+                        </div>
+                        <div class="product-details">
+                            <h3>Nourishing Face Cream (50 mililitres)</h3>
+                            <p class="price">140.00</p>
+                            <p class="special-price"><i class="fas fa-tag"></i> Special: Buy 2 for R250 (Save R30)</p>
+                            <div class="product-description">
+                                <h4>Active Ingredients:</h4>
+                                <p>Polyglyceryl-4 Caprate, 1.5% Hyaluronic Acid, 3% Vitamin B3 (Niacinamide), Liquorice
+                                    Extract, Squalane</p>
+                                <h4>Full Ingredients:</h4>
+                                <p>Water (Aqua), Simmondsia Chinensis (Jojoba) Oil, Vitis Venera (Grape Seed) Oil,
+                                    Vegetable Glycerine, Argania Spinosa Kernel (Argan) Oil, Adansonia digitata (Baobab)
+                                    Oil, Prunus Dulcis (Sweet Almond) Oil, Olea Europea (Olive) Oil, Rosa Canina (Rose
+                                    hip) seed oil, Sclerocarya Birrea (Marula) Oil, Cetylsterate Alcool, Glyceryl
+                                    Stearate, Polyglyceryl-4 Caprate, D Panthenol, Oleic Acid, 1.5% Hyaluronic Acid, 3%
+                                    Vitamin B3 (Niacinamide), Liquorice Extract, Squalane, Stearic Acid, Carbonner,
+                                    Phenoxyethanol (Preservative), Citric Acid</p>
+                                <p><strong>Colourant:</strong> Peach</p>
+                                <p><strong>Essence:</strong> Orange</p>
+                            </div>
+                            <button class="cta-button add-to-cart" data-id="face-cream"
+                                data-name="Nourishing Face Cream" data-price="140.00" data-image="face-cream.jpg">
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-envelope"></i> Contact Us</h3>
+                <ul class="contact-info">
+                    <li><i class="fas fa-envelope"></i> <span>Email:</span> cheyliasingh3@gmail.com</li>
+                    <li><i class="fas fa-phone"></i> <span>Phone:</span> +27 66 207 4523</li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3><i class="fas fa-link"></i> Quick Links</h3>
+                <ul class="quick-links">
+                    <li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                    <li><a href="products.html"><i class="fas fa-chevron-right"></i> Our Products</a></li>
+                    <li><a href="values.html"><i class="fas fa-chevron-right"></i> Our Values</a></li>
+                    <li><a href="privacy.html"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3><i class="fas fa-share-alt"></i> Follow Us</h3>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/cheylia_singh/" aria-label="Instagram"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@cheylia?_t=ZT-8xzyszeIZVl&_r=1" aria-label="TikTok"><i
+                            class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p> &copy; 2025 CHE COSMETICS. All rights reserved.</p>
+            <p class="powered-by">Powered by <a href="https://spectrastudios.co.za" target="_blank"><i
+                        class="fas fa-code"></i>Spectra Studios</a></p>
+        </div>
+    </footer>
+
+    <!-- Image Carousel Modal -->
+    <div class="carousel-modal">
+        <div class="carousel-container">
+            <span class="close-carousel">&times;</span>
+            <div class="carousel-slide active">
+                <img src="" alt="Product Image">
+                <div class="carousel-caption"></div>
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-control prev"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-control next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="carousel-indicators"></div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+    <script>
+        // Add to cart functionality with color selection
+        document.addEventListener('DOMContentLoaded', function () {
+            const addToCartButtons = document.querySelectorAll('.add-to-cart');
+
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    let productName = this.getAttribute('data-name');
+                    const productId = this.getAttribute('data-id');
+
+                    // Handle color selection for merged products
+                    if (productId === 'lipgloss') {
+                        const selectedColor = document.querySelector('input[name="lipgloss-color"]:checked').value;
+                        productName += ` (${selectedColor})`;
+                    } else if (productId === 'lipscrub') {
+                        const selectedColor = document.querySelector('input[name="lipscrub-color"]:checked').value;
+                        productName += ` (${selectedColor})`;
+                    }
+
+                    const product = {
+                        id: productId,
+                        name: productName,
+                        price: 'R' + this.getAttribute('data-price'),
+                        image: this.getAttribute('data-image')
+                    };
+
+                    addToCart(product);
+                });
+            });
+
+            // Color selection change handlers
+            document.querySelectorAll('input[name="lipgloss-color"]').forEach(radio => {
+                radio.addEventListener('change', function () {
+                    if (this.checked) {
+                        const productImage = this.closest('.product-card').querySelector('.main-product-image');
+                        const colorDetails = this.closest('.product-card').querySelector('.color-details');
+                        const essenceDetails = this.closest('.product-card').querySelector('.essence-details');
+
+                        if (this.id === 'lipgloss-lavender') {
+                            productImage.src = 'images/lipgloss-lavender.jpg';
+                            colorDetails.textContent = 'Digital Lavender colourant, Pink Glitter, Rose Gold Lustre consumable Dusting Colourant';
+                            essenceDetails.textContent = 'Strawberry';
+                        } else if (this.id === 'lipgloss-pink') {
+                            productImage.src = 'images/lipgloss-pink.jpg';
+                            colorDetails.textContent = 'Ruby Red colourant, Light Blue Glitter, Pearl (white) Lustre consumable Dusting Colourant';
+                            essenceDetails.textContent = 'Peppermint';
+                        }
+                    }
+                });
+            });
+
+            document.querySelectorAll('input[name="lipscrub-color"]').forEach(radio => {
+                radio.addEventListener('change', function () {
+                    if (this.checked) {
+                        const productImage = this.closest('.product-card').querySelector('.main-product-image');
+                        const colorDetails = this.closest('.product-card').querySelector('.color-details');
+                        const essenceDetails = this.closest('.product-card').querySelector('.essence-details');
+
+                        if (this.id === 'lipscrub-pink') {
+                            productImage.src = 'images/lipscrub-pink.jpg';
+                            colorDetails.textContent = 'Baby Pink';
+                            essenceDetails.textContent = 'Bubble-gum';
+                        } else if (this.id === 'lipscrub-blue') {
+                            productImage.src = 'images/lipscrub-blue.jpg';
+                            colorDetails.textContent = 'Sky Blue';
+                            essenceDetails.textContent = 'Strawberry';
+                        }
+                    }
+                });
+            });
+
+            // Image carousel functionality
+            const productImages = document.querySelectorAll('.product-image img.main-product-image');
+            const carouselModal = document.querySelector('.carousel-modal');
+            const closeCarousel = document.querySelector('.close-carousel');
+            const carouselSlides = document.querySelectorAll('.carousel-slide');
+            const carouselControls = document.querySelectorAll('.carousel-control');
+            const carouselIndicators = document.querySelector('.carousel-indicators');
+
+            productImages.forEach(img => {
+                img.addEventListener('click', function () {
+                    const productCard = this.closest('.product-card');
+                    const carouselImages = productCard.querySelectorAll('.product-carousel img');
+
+                    // Clear existing slides and indicators
+                    document.querySelectorAll('.carousel-slide:not(.active)').forEach(slide => slide.remove());
+                    carouselIndicators.innerHTML = '';
+
+                    // Set up new slides and indicators
+                    carouselImages.forEach((image, index) => {
+                        if (index === 0) {
+                            // Update the active slide
+                            const activeSlide = document.querySelector('.carousel-slide.active');
+                            activeSlide.querySelector('img').src = image.src;
+                            activeSlide.querySelector('.carousel-caption').textContent = image.alt;
+                        } else {
+                            // Create new slides
+                            const slide = document.createElement('div');
+                            slide.className = 'carousel-slide';
+                            slide.innerHTML = `
+                                <img src="${image.src}" alt="${image.alt}">
+                                <div class="carousel-caption">${image.alt}</div>
+                            `;
+                            document.querySelector('.carousel-container').insertBefore(slide, carouselControls[0].parentNode);
+                        }
+
+                        // Create indicators
+                        const indicator = document.createElement('div');
+                        indicator.className = 'indicator' + (index === 0 ? ' active' : '');
+                        indicator.setAttribute('data-slide', index);
+                        carouselIndicators.appendChild(indicator);
+                    });
+
+                    // Show the modal
+                    carouselModal.style.display = 'flex';
+                });
+            });
+
+            closeCarousel.addEventListener('click', function () {
+                carouselModal.style.display = 'none';
+            });
+
+            carouselControls.forEach(control => {
+                control.addEventListener('click', function () {
+                    const slides = document.querySelectorAll('.carousel-slide');
+                    const activeSlide = document.querySelector('.carousel-slide.active');
+                    let nextIndex;
+
+                    if (this.classList.contains('next')) {
+                        nextIndex = (Array.from(slides).indexOf(activeSlide) + 1) % slides.length;
+                    } else {
+                        nextIndex = (Array.from(slides).indexOf(activeSlide) - 1 + slides.length) % slides.length;
+                    }
+
+                    activeSlide.classList.remove('active');
+                    slides[nextIndex].classList.add('active');
+
+                    // Update indicators
+                    document.querySelectorAll('.indicator').forEach((ind, i) => {
+                        ind.classList.toggle('active', i === nextIndex);
+                    });
+                });
+            });
+
+            carouselIndicators.addEventListener('click', function (e) {
+                if (e.target.classList.contains('indicator')) {
+                    const slideIndex = parseInt(e.target.getAttribute('data-slide'));
+                    const slides = document.querySelectorAll('.carousel-slide');
+
+                    document.querySelector('.carousel-slide.active').classList.remove('active');
+                    slides[slideIndex].classList.add('active');
+
+                    // Update indicators
+                    document.querySelectorAll('.indicator').forEach((ind, i) => {
+                        ind.classList.toggle('active', i === slideIndex);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
