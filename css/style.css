@@ -2433,3 +2433,12 @@ footer {
         /* Enable scrolling if content overflows */
     }
 }
+
+@media (max-width: 768px) {
+  .mobile-nav-links li:last-child {
+    margin-top: 2rem !important; /* bring it up */
+    padding: 1rem 0;
+    background: none;
+    border-top: none;
+  }
+}
