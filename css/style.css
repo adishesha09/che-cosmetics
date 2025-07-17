@@ -2413,3 +2413,17 @@ footer {
         border-bottom: none;
     }
 }
+
+@media (max-width: 768px) {
+  .cart-section {
+    padding-top: 120px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-nav-links {
+    top: 70px; /* Bring the menu higher */
+    height: calc(100vh - 70px); /* Adjust height to match new top */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+  }
+}
