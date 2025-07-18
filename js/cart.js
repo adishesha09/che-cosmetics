@@ -4,6 +4,7 @@
  * Updated with special pricing for bulk purchases and enhanced UX
  * Includes robust return-from-PDF notification system
  * Now with automatic PDF download in new tab
+ * Version 2.0 - Updated return flow and notification suppression
  */
 
 // Cart data structure
@@ -70,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Check if returning from invoice PDF
+// Enhanced return from invoice check
 function checkReturnFromInvoice() {
     const urlParams = new URLSearchParams(window.location.search);
     const fromInvoice = urlParams.has('fromInvoice') || 
@@ -81,18 +82,34 @@ function checkReturnFromInvoice() {
         sessionStorage.removeItem('returningFromInvoice');
         history.replaceState(null, '', window.location.pathname);
         
-        // Open checkout modal if not already open
-        if (!checkoutModal || checkoutModal.style.display !== 'block') {
-            openCheckoutModal();
-        }
+        // Open checkout modal immediately
+        openCheckoutModal(true);
         
         // Navigate to step 2 and show notification
         setTimeout(() => {
             goToStep('2');
             showCartNotification('Please upload your payment proof to complete your order', 'info');
             document.getElementById('proof-payment')?.focus();
-        }, 500);
+        }, 300);
     }
+}
+
+// Modified openCheckoutModal to handle return from invoice
+function openCheckoutModal(fromInvoice = false) {
+    // Only prevent if empty cart and not returning from invoice
+    if (cart.length === 0 && !fromInvoice) {
+        showCartNotification('Your cart is empty', 'error');
+        return;
+    }
+
+    checkoutModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    
+    // Only go to step 1 if not coming from invoice
+    if (!fromInvoice) {
+        goToStep('1');
+    }
+    generateOrderReference();
 }
 
 // Generate random order reference
@@ -129,7 +146,7 @@ function calculateItemPrice(productId, quantity) {
 function setupEventListeners() {
     // Checkout button
     if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', openCheckoutModal);
+        checkoutBtn.addEventListener('click', () => openCheckoutModal());
     }
 
     // Modal close buttons
@@ -569,7 +586,7 @@ function generatePDFInvoice() {
 
             // Set markers for return detection
             sessionStorage.setItem('returningFromInvoice', 'true');
-            const returnUrl = `${window.location.href}?fromInvoice=true`;
+            const returnUrl = `${window.location.origin}${window.location.pathname}?fromInvoice=true`;
 
             // Return to site link
             y += 15;
@@ -600,7 +617,10 @@ function generatePDFInvoice() {
                 a.click();
                 document.body.removeChild(a);
                 
-
+                // Close this tab after a short delay
+                setTimeout(() => {
+                    window.close();
+                }, 1000);
             } else {
                 // This is the main window - open in new tab as before
                 window.open(pdfUrl, '_blank');
@@ -624,19 +644,6 @@ function generatePDFInvoice() {
     }
 }
 
-// Open checkout modal
-function openCheckoutModal() {
-    if (cart.length === 0) {
-        showCartNotification('Your cart is empty', 'error');
-        return;
-    }
-
-    checkoutModal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    goToStep('1');
-    generateOrderReference();
-}
-
 // Close checkout modal
 function closeCheckoutModal() {
     checkoutModal.style.display = 'none';
@@ -648,17 +655,21 @@ function completeOrder() {
     const email = document.getElementById('email')?.value || 'your@email.com';
     if (confirmationEmail) confirmationEmail.textContent = email;
 
-    // Clear cart
-    cart = [];
-    saveCart();
-    updateCartCount();
+    // Clear cart only if we're actually completing the order
+    if (document.querySelector('.step-3.active')) {
+        cart = [];
+        saveCart();
+        updateCartCount();
+        
+        // Set flag to suppress empty cart notification when redirecting
+        sessionStorage.setItem('suppressCartNotification', 'true');
+    }
     
     // Add event listener to continue shopping button if it exists
     const continueShoppingBtn = document.querySelector('.continue-shopping-btn');
     if (continueShoppingBtn) {
         continueShoppingBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            // Don't show empty cart notification when redirecting
             sessionStorage.setItem('suppressCartNotification', 'true');
             window.location.href = 'index.html';
         });
