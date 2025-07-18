@@ -230,6 +230,7 @@ function validateStepTransition(button, nextStep) {
         processPaymentProof(proofInput.files[0])
             .then(success => {
                 if (success) {
+                    completeOrder(); // This will clear the cart
                     goToStep(nextStep);
                 }
             });
@@ -543,13 +544,11 @@ function completeOrder() {
     const email = document.getElementById('email')?.value || 'your@email.com';
     if (confirmationEmail) confirmationEmail.textContent = email;
 
-    // Generate invoice before clearing cart
-    generatePDFInvoice();
-
     // Clear cart
     cart = [];
     saveCart();
     updateCartCount();
+    renderCartItems(); // Update the UI to show empty cart
 
     // Show confirmation
     goToStep('3');
