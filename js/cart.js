@@ -607,24 +607,18 @@ function generatePDFInvoice() {
             const pdfOutput = doc.output('blob');
             const pdfUrl = URL.createObjectURL(pdfOutput);
             
-            // Check if this is the main window or the new tab
-            if (window.opener) {
-                // This is the new tab - trigger download automatically
-                const a = document.createElement('a');
-                a.href = pdfUrl;
-                a.download = `CHE_Invoice_${orderReference.textContent}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                
-                // Close this tab after a short delay
-                setTimeout(() => {
-                    window.close();
-                }, 1000);
-            } else {
-                // This is the main window - open in new tab as before
-                window.open(pdfUrl, '_blank');
-            }
+            // Trigger download in the current window
+            const a = document.createElement('a');
+            a.href = pdfUrl;
+            a.download = `CHE_Invoice_${orderReference.textContent}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            // Clean up
+            setTimeout(() => {
+                URL.revokeObjectURL(pdfUrl);
+            }, 100);
 
             // Mark invoice as downloaded
             invoiceDownloaded = true;
