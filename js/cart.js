@@ -1,7 +1,7 @@
 /**
  * CHE COSMETICS - Complete Shopping Cart System
  * With mandatory invoice download and payment proof verification
- * Updated with special pricing for bulk purchases
+ * Updated with special pricing for bulk purchases and enhanced UX
  */
 
 // Cart data structure
@@ -60,6 +60,17 @@ document.addEventListener('DOMContentLoaded', function () {
     setupEventListeners();
     generateOrderReference();
     addInvoiceDownloadButton();
+    
+    // Detect return via back button
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted || performance.navigation.type === 2) {
+            const activeStep = document.querySelector('.checkout-step.active');
+            if (activeStep && activeStep.classList.contains('step-2')) {
+                showCartNotification('Please upload your payment proof to complete your order', 'info');
+                document.getElementById('proof-payment')?.focus();
+            }
+        }
+    });
 });
 
 // Generate random order reference
@@ -77,7 +88,6 @@ function calculateItemPrice(productId, quantity) {
     const specialPricing = SPECIAL_PRICING[productId];
     
     if (!specialPricing) {
-        // If no special pricing, use the product's price from the cart
         const item = cart.find(item => item.id === productId);
         return item ? parseFloat(item.price.replace('R', '')) * quantity : 0;
     }
@@ -148,41 +158,66 @@ function setupEventListeners() {
     }
 }
 
-// Add invoice download button to step 2
+// Add invoice download button and enhanced UI to step 2
 function addInvoiceDownloadButton() {
     const step2 = document.querySelector('.step-2 .step-content');
     if (!step2) return;
 
-    const existingBtn = step2.querySelector('.invoice-download-btn');
-    if (existingBtn) return;
+    const existingContainer = step2.querySelector('.invoice-download-container');
+    if (existingContainer) return;
 
+    // Create enhanced instructions and buttons
     const downloadContainer = document.createElement('div');
     downloadContainer.className = 'invoice-download-container';
 
+    const enhancedInstructions = document.createElement('div');
+    enhancedInstructions.className = 'enhanced-instructions';
+    enhancedInstructions.innerHTML = `
+        <div class="instruction-step">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <h4>Invoice Generated</h4>
+            <p>Your invoice has been created with all payment details.</p>
+        </div>
+        <div class="instruction-step">
+            <i class="fas fa-money-bill-wave"></i>
+            <h4>Make Payment</h4>
+            <p>Complete the payment using the banking details provided.</p>
+        </div>
+        <div class="instruction-step">
+            <i class="fas fa-upload"></i>
+            <h4>Return & Upload</h4>
+            <p>Come back to this page and upload your payment proof below.</p>
+            <p class="note"><i class="fas fa-info-circle"></i> The invoice opens in a new tab so this page remains open</p>
+        </div>
+    `;
+
     const downloadBtn = document.createElement('button');
     downloadBtn.className = 'cta-button invoice-download-btn';
-    downloadBtn.innerHTML = '<i class="fas fa-file-download"></i> Download Invoice';
+    downloadBtn.innerHTML = '<i class="fas fa-file-download"></i> Generate Invoice';
     downloadBtn.addEventListener('click', generatePDFInvoice);
 
-    const instructions = document.createElement('p');
-    instructions.className = 'invoice-instructions';
-    instructions.innerHTML = '<i class="fas fa-info-circle"></i> Invoice will download automatically. If it doesn\'t, click the button below.';
+    const paymentDoneBtn = document.createElement('button');
+    paymentDoneBtn.className = 'cta-button payment-done-btn';
+    paymentDoneBtn.innerHTML = '<i class="fas fa-check-circle"></i> I\'ve Made Payment';
+    paymentDoneBtn.addEventListener('click', function() {
+        document.getElementById('proof-payment').click();
+    });
 
-    downloadContainer.appendChild(instructions);
+    downloadContainer.appendChild(enhancedInstructions);
     downloadContainer.appendChild(downloadBtn);
+    downloadContainer.appendChild(paymentDoneBtn);
 
     const firstStep = step2.querySelector('.payment-step');
     if (firstStep) {
         firstStep.insertBefore(downloadContainer, firstStep.firstChild);
     }
 
-    // Add event listener for when step 2 becomes active
-    const observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
+    // Observer for automatic invoice generation
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
             if (mutation.attributeName === 'class') {
                 const currentClass = mutation.target.className;
                 if (currentClass.includes('active') && currentClass.includes('step-2')) {
-                    // Only download if not already downloaded
                     if (!invoiceDownloaded) {
                         generatePDFInvoice();
                     }
@@ -191,7 +226,6 @@ function addInvoiceDownloadButton() {
         });
     });
 
-    // Start observing step-2 for class changes
     const step2Element = document.querySelector('.step-2');
     if (step2Element) {
         observer.observe(step2Element, { attributes: true });
@@ -213,7 +247,7 @@ function validateStepTransition(button, nextStep) {
         const proofInput = document.getElementById('proof-payment');
 
         if (!invoiceDownloaded) {
-            showCartNotification('Please download the invoice first', 'error');
+            showCartNotification('Please generate the invoice first', 'error');
             return;
         }
 
@@ -230,7 +264,7 @@ function validateStepTransition(button, nextStep) {
         processPaymentProof(proofInput.files[0])
             .then(success => {
                 if (success) {
-                    completeOrder(); // This will clear the cart
+                    completeOrder();
                     goToStep(nextStep);
                 }
             });
@@ -254,10 +288,17 @@ function validateShippingForm() {
         }
     });
 
+    // Validate email format
+    const emailField = document.getElementById('email');
+    if (emailField && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
+        showCartNotification('Please enter a valid email address', 'error');
+        isValid = false;
+    }
+
     return isValid;
 }
 
-// Process payment proof upload
+// Process payment proof upload and submit order
 async function processPaymentProof(file) {
     try {
         const spinner = document.querySelector('.upload-spinner');
@@ -341,26 +382,26 @@ async function processPaymentProof(file) {
     }
 }
 
-// Navigate between checkout steps
+// Navigate between checkout steps with enhanced UI
 function goToStep(stepNumber) {
     // Update step indicators
     document.querySelectorAll('.step').forEach(step => {
+        step.classList.remove('current');
         if (parseInt(step.getAttribute('data-step')) <= parseInt(stepNumber)) {
             step.classList.add('active');
         } else {
             step.classList.remove('active');
         }
     });
+    
+    // Mark current step
+    const currentStep = document.querySelector(`.step[data-step="${stepNumber}"]`);
+    if (currentStep) currentStep.classList.add('current');
 
     // Show/hide steps
     checkoutSteps.forEach(step => {
         if (step.classList.contains(`step-${stepNumber}`)) {
             step.classList.add('active');
-
-            // Automatically download invoice when step 2 becomes active
-            if (stepNumber === '2' && !invoiceDownloaded) {
-                generatePDFInvoice();
-            }
         } else {
             step.classList.remove('active');
         }
@@ -370,7 +411,7 @@ function goToStep(stepNumber) {
     document.querySelector('.modal-content').scrollTop = 0;
 }
 
-// Generate professional PDF invoice
+// Generate professional PDF invoice with return link
 function generatePDFInvoice() {
     // Check if jsPDF is already loaded
     if (window.jspdf) {
@@ -493,23 +534,34 @@ function generatePDFInvoice() {
             y += 7;
             doc.text(`Reference: ${orderReference.textContent}`, 20, y);
 
-            // Thank you message
+            // Return to site link
             y += 15;
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 255);
+            doc.textWithLink('Click here to return and upload payment proof', 105, y, { 
+                url: window.location.href,
+                align: 'center'
+            });
+
+            // Thank you message
+            y += 10;
             doc.setFontSize(12);
             doc.setTextColor(239, 93, 168);
             doc.text('Thank you for your purchase!', 105, y, { align: 'center' });
 
-            // Save the PDF
-            doc.save(`CHE_Cosmetics_Invoice_${orderReference.textContent}.pdf`);
+            // Open PDF in new tab instead of downloading
+            const pdfOutput = doc.output('blob');
+            const pdfUrl = URL.createObjectURL(pdfOutput);
+            window.open(pdfUrl, '_blank');
 
             // Mark invoice as downloaded
             invoiceDownloaded = true;
-            showCartNotification('Invoice downloaded. Please proceed with payment.', 'success');
+            showCartNotification('Invoice opened in new tab. Please proceed with payment.', 'success');
 
             // Update download button
             const downloadBtn = document.querySelector('.invoice-download-btn');
             if (downloadBtn) {
-                downloadBtn.innerHTML = '<i class="fas fa-check-circle"></i> Invoice Downloaded';
+                downloadBtn.innerHTML = '<i class="fas fa-check-circle"></i> Invoice Generated';
                 downloadBtn.classList.add('downloaded');
                 downloadBtn.disabled = true;
             }
@@ -548,15 +600,10 @@ function completeOrder() {
     cart = [];
     saveCart();
     updateCartCount();
-    renderCartItems(); // Update the UI to show empty cart
-
-    // Show confirmation
-    goToStep('3');
 }
 
 // Add item to cart
 function addToCart(product) {
-    // Check if product already exists in cart
     const existingItem = cart.find(item => item.id === product.id);
 
     if (existingItem) {
@@ -610,7 +657,6 @@ function updateCartCount() {
         element.textContent = totalItems;
     });
 
-    // Always link to the cart page, even when empty
     cartLinkElements.forEach(link => {
         link.setAttribute('href', 'shopping-cart.html');
     });
@@ -779,6 +825,9 @@ style.textContent = `
     .cart-notification.warning {
         background-color: #ff9800;
     }
+    .cart-notification.info {
+        background-color: #2196F3;
+    }
     .invoice-download-container {
         margin-bottom: 20px;
         padding: 15px;
@@ -793,14 +842,47 @@ style.textContent = `
     .invoice-download-btn.downloaded {
         background-color: #4CAF50 !important;
     }
-    .invoice-instructions {
-        color: #666;
-        font-size: 0.9em;
-        margin-bottom: 5px;
+    .enhanced-instructions {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 15px;
     }
-    .invoice-instructions i {
-        margin-right: 5px;
-        color: #2396d8;
+    .instruction-step {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+    .instruction-step i {
+        color: #ef5da8;
+        font-size: 1.2em;
+        margin-right: 10px;
+        margin-top: 3px;
+    }
+    .instruction-step h4 {
+        margin: 0 0 5px 0;
+        font-size: 1em;
+    }
+    .instruction-step p {
+        margin: 0;
+        font-size: 0.9em;
+        color: #666;
+    }
+    .instruction-step p.note {
+        font-size: 0.8em;
+        color: #888;
+        margin-top: 5px;
+    }
+    .payment-done-btn {
+        margin-top: 10px;
+        background-color: #4CAF50 !important;
+    }
+    .payment-done-btn:hover {
+        background-color: #3e8e41 !important;
+    }
+    .checkout-steps .step.current {
+        background: #ef5da8;
+        color: white;
+        border-color: #ef5da8;
     }
     .upload-spinner {
         display: none;
