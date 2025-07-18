@@ -2,6 +2,7 @@
  * CHE COSMETICS - Complete Shopping Cart System
  * With mandatory invoice download and payment proof verification
  * Updated with special pricing for bulk purchases and enhanced UX
+ * Fixed: Cart persistence when returning from invoice PDF
  */
 
 // Cart data structure
@@ -61,6 +62,18 @@ document.addEventListener('DOMContentLoaded', function () {
     generateOrderReference();
     addInvoiceDownloadButton();
     
+    // Check for return from payment
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('returnToPayment')) {
+        openCheckoutModal();
+        goToStep('2');
+        showCartNotification('Please upload your payment proof to complete your order', 'info');
+        document.getElementById('proof-payment')?.focus();
+        
+        // Clean the URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     // Detect return via back button
     window.addEventListener('pageshow', function(event) {
         if (event.persisted || performance.navigation.type === 2) {
@@ -538,8 +551,9 @@ function generatePDFInvoice() {
             y += 15;
             doc.setFontSize(10);
             doc.setTextColor(0, 0, 255);
+            const returnUrl = `${window.location.href.split('#')[0]}?returnToPayment=true`;
             doc.textWithLink('Click here to return and upload payment proof', 105, y, { 
-                url: window.location.href,
+                url: returnUrl,
                 align: 'center'
             });
 
@@ -591,15 +605,19 @@ function closeCheckoutModal() {
     document.body.style.overflow = '';
 }
 
-// Complete order and clear cart
+// Complete order and clear cart only after successful submission
 function completeOrder() {
     const email = document.getElementById('email')?.value || 'your@email.com';
     if (confirmationEmail) confirmationEmail.textContent = email;
 
-    // Clear cart
-    cart = [];
-    saveCart();
-    updateCartCount();
+    // Only clear cart if we're actually completing the order (step 3)
+    const currentStep = document.querySelector('.checkout-step.active');
+    if (currentStep && currentStep.classList.contains('step-3')) {
+        // Clear cart
+        cart = [];
+        saveCart();
+        updateCartCount();
+    }
 }
 
 // Add item to cart
