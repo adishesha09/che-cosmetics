@@ -3,6 +3,7 @@
  * With mandatory invoice download and payment proof verification
  * Updated with special pricing for bulk purchases and enhanced UX
  * Includes robust return-from-PDF notification system
+ * Now with automatic PDF download in new tab
  */
 
 // Cart data structure
@@ -62,6 +63,11 @@ document.addEventListener('DOMContentLoaded', function () {
     generateOrderReference();
     addInvoiceDownloadButton();
     checkReturnFromInvoice();
+    
+    // Check if we should suppress the empty cart notification
+    if (sessionStorage.getItem('suppressCartNotification') === 'true') {
+        sessionStorage.removeItem('suppressCartNotification');
+    }
 });
 
 // Check if returning from invoice PDF
@@ -438,7 +444,7 @@ function goToStep(stepNumber) {
     document.querySelector('.modal-content').scrollTop = 0;
 }
 
-// Generate professional PDF invoice with return link
+// Generate professional PDF invoice with return link and auto-download
 function generatePDFInvoice() {
     // Check if jsPDF is already loaded
     if (window.jspdf) {
@@ -580,14 +586,28 @@ function generatePDFInvoice() {
             doc.setTextColor(239, 93, 168);
             doc.text('Thank you for your purchase!', 105, y, { align: 'center' });
 
-            // Open PDF in new tab instead of downloading
+            // Generate PDF output
             const pdfOutput = doc.output('blob');
             const pdfUrl = URL.createObjectURL(pdfOutput);
-            window.open(pdfUrl, '_blank');
+            
+            // Check if this is the main window or the new tab
+            if (window.opener) {
+                // This is the new tab - trigger download automatically
+                const a = document.createElement('a');
+                a.href = pdfUrl;
+                a.download = `CHE_Invoice_${orderReference.textContent}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+            } else {
+                // This is the main window - open in new tab as before
+                window.open(pdfUrl, '_blank');
+            }
 
             // Mark invoice as downloaded
             invoiceDownloaded = true;
-            showCartNotification('Invoice opened in new tab. Please proceed with payment.', 'success');
+            showCartNotification('Invoice generated successfully', 'success');
 
             // Update download button
             const downloadBtn = document.querySelector('.invoice-download-btn');
@@ -631,6 +651,17 @@ function completeOrder() {
     cart = [];
     saveCart();
     updateCartCount();
+    
+    // Add event listener to continue shopping button if it exists
+    const continueShoppingBtn = document.querySelector('.continue-shopping-btn');
+    if (continueShoppingBtn) {
+        continueShoppingBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Don't show empty cart notification when redirecting
+            sessionStorage.setItem('suppressCartNotification', 'true');
+            window.location.href = 'index.html';
+        });
+    }
 }
 
 // Add item to cart
@@ -801,8 +832,13 @@ function renderCartItems() {
     });
 }
 
-// Show cart notification
+// Show cart notification with suppression check
 function showCartNotification(message, type = 'success') {
+    // Don't show empty cart notifications if suppressed
+    if (message === 'Your cart is empty' && sessionStorage.getItem('suppressCartNotification') === 'true') {
+        return;
+    }
+    
     const notification = document.createElement('div');
     notification.className = `cart-notification ${type}`;
     notification.innerHTML = `
