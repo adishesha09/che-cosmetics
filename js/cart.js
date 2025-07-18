@@ -363,10 +363,10 @@ async function processPaymentProof(file) {
         orderFormData.append('_cc', 'cheyliasingh3@gmail.com');
         orderFormData.append('_subject', `New Order: ${orderReference.textContent}`);
         orderFormData.append('Order Reference', orderReference.textContent);
-        orderFormData.append('Customer Name', customerName);
-        orderFormData.append('Customer Email', customerEmail);
-        orderFormData.append('Customer Phone', customerPhone);
-        orderFormData.append('Shipping Address', `${customerAddress}, ${customerCity}, ${customerPostalCode}, ${customerProvince}`);
+        orderFormData.append('full-name', customerName);
+        orderFormData.append('email', customerEmail);
+        orderFormData.append('phone', customerPhone);
+        orderFormData.append('address', `${customerAddress}, ${customerCity}, ${customerPostalCode}, ${customerProvince}`);
         orderFormData.append('Order Details', orderDetails);
         orderFormData.append('Subtotal', `R${subtotal.toFixed(2)}`);
         orderFormData.append('Shipping Fee', `R${STANDARD_SHIPPING_FEE.toFixed(2)}`);
@@ -388,9 +388,9 @@ async function processPaymentProof(file) {
             paymentFormData.append('_cc', 'cheyliasingh3@gmail.com');
             paymentFormData.append('_subject', `Payment Proof for Order ${orderReference.textContent}`);
             paymentFormData.append('Order Reference', orderReference.textContent);
-            paymentFormData.append('Customer Name', customerName);
-            paymentFormData.append('Customer Email', customerEmail);
-            paymentFormData.append('proof', file);
+            paymentFormData.append('full-name', customerName);
+            paymentFormData.append('email', customerEmail);
+            paymentFormData.append('proof-payment', file);
 
             const paymentResponse = await fetch('https://formsubmit.co/ajax/cheyliasingh3@gmail.com', {
                 method: 'POST',
