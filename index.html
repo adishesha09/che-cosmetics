@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="CHE COSMETICS - Shop makeup, cosmetics, and more.">
+    <meta name="description" content="CHE COSMETICS - Shop makeup, cosmetics, and more.">
     <meta name="keywords" content="CHE COSMETICS, cosmetics and beauty products">
     <meta name="robots" content="index, follow">
     <meta name="google-site-verification" content="BwA-oCjTokzO1LT1NsJ3fheBalL3F_M3H-aWfHSpvts" />
@@ -161,8 +160,16 @@
     <section class="newsletter">
         <h2><i class="fas fa-paper-plane"></i> Join Our Beauty Community</h2>
         <p>Subscribe for exclusive offers and early access to new products</p>
-        <form class="newsletter-form">
-            <input type="email" placeholder="Your email address" required>
+        <form class="newsletter-form" action="https://formsubmit.co/cheyliasingh3@gmail.com" method="POST">
+            <!-- FormSubmit required fields -->
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_next" value="https://www.checosmetics.co.za/thank-you.html">
+            <input type="hidden" name="_subject" value="New Newsletter Subscriber">
+
+            <!-- Email input -->
+            <input type="email" name="email" placeholder="Your email address" required>
+
+            <!-- Submit button -->
             <button type="submit" class="cta-button"><i class="fas fa-paper-plane"></i> Subscribe</button>
         </form>
     </section>
@@ -205,21 +212,6 @@
     <script src="js/main.js"></script>
     <script src="js/cart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script>
-
-        // Newsletter form submission
-        document.querySelector('.newsletter-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const email = this.querySelector('input[type="email"]').value;
-
-            // Send email using mailto:
-            window.location.href = `mailto:cheyliasingh3@gmail.com?subject=Newsletter Subscription&body=Please add the following email to your newsletter list: ${email}`;
-
-            // Show confirmation message
-            alert('Thank you for subscribing! We will add you to our newsletter list.');
-            this.reset();
-        });
-    </script>
 </body>
 
 </html>
