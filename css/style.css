@@ -2539,3 +2539,84 @@ footer {
         font-size: 3rem;
     }
 }
+
+/* Payment Process Info Styles */
+.payment-process-info {
+    background-color: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+.payment-process-info h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.payment-steps {
+    margin: 1.5rem 0;
+}
+
+.payment-step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: flex-start;
+}
+
+.step-number {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+}
+
+.step-content h4 {
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+    color: var(--secondary-color);
+}
+
+.step-content p {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+.payment-note {
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.payment-note i {
+    color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .payment-process-info {
+        padding: 1.5rem;
+    }
+    
+    .payment-step {
+        margin-bottom: 1rem;
+    }
+}
