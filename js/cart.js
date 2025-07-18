@@ -2,7 +2,7 @@
  * CHE COSMETICS - Complete Shopping Cart System
  * With mandatory invoice download and payment proof verification
  * Updated with special pricing for bulk purchases and enhanced UX
- * Fixed: Cart persistence when returning from invoice PDF
+ * Includes robust return-from-PDF notification system
  */
 
 // Cart data structure
@@ -61,30 +61,33 @@ document.addEventListener('DOMContentLoaded', function () {
     setupEventListeners();
     generateOrderReference();
     addInvoiceDownloadButton();
-    
-    // Check for return from payment
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('returnToPayment')) {
-        openCheckoutModal();
-        goToStep('2');
-        showCartNotification('Please upload your payment proof to complete your order', 'info');
-        document.getElementById('proof-payment')?.focus();
-        
-        // Clean the URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-
-    // Detect return via back button
-    window.addEventListener('pageshow', function(event) {
-        if (event.persisted || performance.navigation.type === 2) {
-            const activeStep = document.querySelector('.checkout-step.active');
-            if (activeStep && activeStep.classList.contains('step-2')) {
-                showCartNotification('Please upload your payment proof to complete your order', 'info');
-                document.getElementById('proof-payment')?.focus();
-            }
-        }
-    });
+    checkReturnFromInvoice();
 });
+
+// Check if returning from invoice PDF
+function checkReturnFromInvoice() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromInvoice = urlParams.has('fromInvoice') || 
+                      sessionStorage.getItem('returningFromInvoice') === 'true';
+    
+    if (fromInvoice) {
+        // Clean up markers
+        sessionStorage.removeItem('returningFromInvoice');
+        history.replaceState(null, '', window.location.pathname);
+        
+        // Open checkout modal if not already open
+        if (!checkoutModal || checkoutModal.style.display !== 'block') {
+            openCheckoutModal();
+        }
+        
+        // Navigate to step 2 and show notification
+        setTimeout(() => {
+            goToStep('2');
+            showCartNotification('Please upload your payment proof to complete your order', 'info');
+            document.getElementById('proof-payment')?.focus();
+        }, 500);
+    }
+}
 
 // Generate random order reference
 function generateOrderReference() {
@@ -169,6 +172,17 @@ function setupEventListeners() {
             }
         });
     }
+
+    // Detect return via back button
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted || performance.navigation.type === 2) {
+            const activeStep = document.querySelector('.checkout-step.active');
+            if (activeStep && activeStep.classList.contains('step-2')) {
+                showCartNotification('Please upload your payment proof to complete your order', 'info');
+                document.getElementById('proof-payment')?.focus();
+            }
+        }
+    });
 }
 
 // Add invoice download button and enhanced UI to step 2
@@ -547,11 +561,14 @@ function generatePDFInvoice() {
             y += 7;
             doc.text(`Reference: ${orderReference.textContent}`, 20, y);
 
+            // Set markers for return detection
+            sessionStorage.setItem('returningFromInvoice', 'true');
+            const returnUrl = `${window.location.href}?fromInvoice=true`;
+
             // Return to site link
             y += 15;
             doc.setFontSize(10);
             doc.setTextColor(0, 0, 255);
-            const returnUrl = `${window.location.href.split('#')[0]}?returnToPayment=true`;
             doc.textWithLink('Click here to return and upload payment proof', 105, y, { 
                 url: returnUrl,
                 align: 'center'
@@ -605,19 +622,15 @@ function closeCheckoutModal() {
     document.body.style.overflow = '';
 }
 
-// Complete order and clear cart only after successful submission
+// Complete order and clear cart
 function completeOrder() {
     const email = document.getElementById('email')?.value || 'your@email.com';
     if (confirmationEmail) confirmationEmail.textContent = email;
 
-    // Only clear cart if we're actually completing the order (step 3)
-    const currentStep = document.querySelector('.checkout-step.active');
-    if (currentStep && currentStep.classList.contains('step-3')) {
-        // Clear cart
-        cart = [];
-        saveCart();
-        updateCartCount();
-    }
+    // Clear cart
+    cart = [];
+    saveCart();
+    updateCartCount();
 }
 
 // Add item to cart
