@@ -3,8 +3,8 @@
  * With mandatory invoice download and payment proof verification
  * Updated with special pricing for bulk purchases and enhanced UX
  * Includes robust return-from-PDF notification system
- * Now with automatic PDF download in new tab
- * Version 2.0 - Updated return flow and notification suppression
+ * Now with automatic PDF download in new tab and invoice emailing
+ * Version 2.1 - Added invoice emailing functionality
  */
 
 // Cart data structure
@@ -631,10 +631,64 @@ function generatePDFInvoice() {
                 downloadBtn.classList.add('downloaded');
                 downloadBtn.disabled = true;
             }
+
+            // Send invoice details via email
+            sendInvoiceEmail();
+
         } catch (error) {
             console.error('PDF generation error:', error);
             showCartNotification('Failed to generate invoice. Please try again.', 'error');
         }
+    }
+}
+
+// Function to send invoice details via email
+async function sendInvoiceEmail() {
+    try {
+        // Get customer details from the form
+        const customerName = document.getElementById('full-name')?.value || 'Customer';
+        const customerEmail = document.getElementById('email')?.value || 'No email provided';
+        
+        // Prepare order details with special pricing applied
+        let orderDetails = cart.map(item => {
+            const price = calculateItemPrice(item.id, item.quantity);
+            return `${item.name} (Qty: ${item.quantity}) - R${price.toFixed(2)}`;
+        }).join('\n');
+
+        const subtotal = cart.reduce((total, item) => {
+            return total + calculateItemPrice(item.id, item.quantity);
+        }, 0);
+        
+        const total = subtotal + STANDARD_SHIPPING_FEE;
+
+        // Create FormData for email submission
+        const emailFormData = new FormData();
+        emailFormData.append('_cc', 'cheyliasingh3@gmail.com');
+        emailFormData.append('_subject', `New Invoice Generated: ${orderReference.textContent}`);
+        emailFormData.append('Order Reference', orderReference.textContent);
+        emailFormData.append('full-name', customerName);
+        emailFormData.append('email', customerEmail);
+        emailFormData.append('Order Details', orderDetails);
+        emailFormData.append('Subtotal', `R${subtotal.toFixed(2)}`);
+        emailFormData.append('Shipping Fee', `R${STANDARD_SHIPPING_FEE.toFixed(2)}`);
+        emailFormData.append('Total Amount', `R${total.toFixed(2)}`);
+        emailFormData.append('_template', 'table'); // Use table template for better formatting
+
+        // Send email via FormSubmit
+        const response = await fetch('https://formsubmit.co/ajax/cheyliasingh3@gmail.com', {
+            method: 'POST',
+            body: emailFormData
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to send invoice email');
+        }
+
+        console.log('Invoice details emailed successfully');
+
+    } catch (error) {
+        console.error('Email sending error:', error);
+        // Don't show error to user as it doesn't affect their experience
     }
 }
 
@@ -991,6 +1045,17 @@ style.textContent = `
         padding-left: 20px;
         min-width: 80px;
         text-align: right;
+    }
+    .email-status {
+        margin-top: 10px;
+        font-size: 0.9em;
+        color: #666;
+    }
+    .email-status.success {
+        color: #4CAF50;
+    }
+    .email-status.error {
+        color: #f44336;
     }
     @keyframes spin {
         0% { transform: rotate(0deg); }
