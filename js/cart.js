@@ -4,7 +4,7 @@
  * Updated with special pricing for bulk purchases and enhanced UX
  * Includes robust return-from-PDF notification system
  * Now with automatic PDF download in new tab and invoice emailing
- * Version 2.1 - Added invoice emailing functionality
+ * Version 2.2 - Enhanced invoice matching and payment proof upload
  */
 
 // Cart data structure
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Enhanced return from invoice check
+// Enhanced return from invoice check with invoice number matching
 function checkReturnFromInvoice() {
     const urlParams = new URLSearchParams(window.location.search);
     const fromInvoice = urlParams.has('fromInvoice') || 
@@ -81,6 +81,15 @@ function checkReturnFromInvoice() {
         // Clean up markers
         sessionStorage.removeItem('returningFromInvoice');
         history.replaceState(null, '', window.location.pathname);
+        
+        // Restore invoice number from session storage
+        const savedInvoiceNumber = sessionStorage.getItem('currentInvoiceNumber');
+        if (savedInvoiceNumber && orderReference) {
+            orderReference.textContent = savedInvoiceNumber;
+            if (orderNumber) {
+                orderNumber.textContent = savedInvoiceNumber;
+            }
+        }
         
         // Open checkout modal immediately
         openCheckoutModal(true);
@@ -94,9 +103,7 @@ function checkReturnFromInvoice() {
     }
 }
 
-// Modified openCheckoutModal to handle return from invoice
 function openCheckoutModal(fromInvoice = false) {
-    // Only prevent if empty cart and not returning from invoice
     if (cart.length === 0 && !fromInvoice) {
         showCartNotification('Your cart is empty', 'error');
         return;
@@ -105,24 +112,25 @@ function openCheckoutModal(fromInvoice = false) {
     checkoutModal.style.display = 'block';
     document.body.style.overflow = 'hidden';
     
-    // Only go to step 1 if not coming from invoice
     if (!fromInvoice) {
         goToStep('1');
     }
     generateOrderReference();
 }
 
-// Generate random order reference
 function generateOrderReference() {
     if (orderReference) {
-        orderReference.textContent = 'CHE-' + Math.floor(1000 + Math.random() * 9000);
-        if (orderNumber) {
-            orderNumber.textContent = orderReference.textContent;
+        // Only generate new reference if one doesn't exist in session storage
+        const savedInvoiceNumber = sessionStorage.getItem('currentInvoiceNumber');
+        if (!savedInvoiceNumber) {
+            orderReference.textContent = 'CHE-' + Math.floor(1000 + Math.random() * 9000);
+            if (orderNumber) {
+                orderNumber.textContent = orderReference.textContent;
+            }
         }
     }
 }
 
-// Calculate price for an item considering special pricing
 function calculateItemPrice(productId, quantity) {
     const specialPricing = SPECIAL_PRICING[productId];
     
@@ -142,14 +150,11 @@ function calculateItemPrice(productId, quantity) {
     return quantity * singlePrice;
 }
 
-// Set up all event listeners
 function setupEventListeners() {
-    // Checkout button
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', () => openCheckoutModal());
     }
 
-    // Modal close buttons
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', closeCheckoutModal);
     }
@@ -158,7 +163,6 @@ function setupEventListeners() {
         modalCloseBtn.addEventListener('click', closeCheckoutModal);
     }
 
-    // Next step buttons in checkout
     nextStepBtns.forEach(btn => {
         btn.addEventListener('click', function () {
             const nextStep = this.getAttribute('data-next');
@@ -166,7 +170,6 @@ function setupEventListeners() {
         });
     });
 
-    // Previous step buttons in checkout
     prevStepBtns.forEach(btn => {
         btn.addEventListener('click', function () {
             const prevStep = this.getAttribute('data-prev');
@@ -174,29 +177,30 @@ function setupEventListeners() {
         });
     });
 
-    // Download invoice button
     if (downloadInvoiceBtn) {
         downloadInvoiceBtn.addEventListener('click', generatePDFInvoice);
     }
 
-    // Close modal when clicking outside
     window.addEventListener('click', function (event) {
         if (event.target === checkoutModal) {
             closeCheckoutModal();
         }
     });
 
-    // Payment proof upload handler
+    // Enhanced payment proof upload handler with visual feedback
     const proofInput = document.getElementById('proof-payment');
     if (proofInput) {
         proofInput.addEventListener('change', function () {
             if (this.files.length > 0) {
+                const feedback = this.parentElement.querySelector('.upload-feedback');
+                if (feedback) {
+                    feedback.style.display = 'flex';
+                }
                 showCartNotification('Payment proof selected', 'success');
             }
         });
     }
 
-    // Detect return via back button
     window.addEventListener('pageshow', function(event) {
         if (event.persisted || performance.navigation.type === 2) {
             const activeStep = document.querySelector('.checkout-step.active');
@@ -208,7 +212,6 @@ function setupEventListeners() {
     });
 }
 
-// Add invoice download button and enhanced UI to step 2
 function addInvoiceDownloadButton() {
     const step2 = document.querySelector('.step-2 .step-content');
     if (!step2) return;
@@ -216,7 +219,6 @@ function addInvoiceDownloadButton() {
     const existingContainer = step2.querySelector('.invoice-download-container');
     if (existingContainer) return;
 
-    // Create enhanced instructions and buttons
     const downloadContainer = document.createElement('div');
     downloadContainer.className = 'invoice-download-container';
 
@@ -262,7 +264,6 @@ function addInvoiceDownloadButton() {
         firstStep.insertBefore(downloadContainer, firstStep.firstChild);
     }
 
-    // Observer for automatic invoice generation
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.attributeName === 'class') {
@@ -282,17 +283,14 @@ function addInvoiceDownloadButton() {
     }
 }
 
-// Validate step transition with requirements
 function validateStepTransition(button, nextStep) {
     const currentStep = button.closest('.checkout-step').classList[1].split('-')[1];
 
-    // Step 1 to Step 2: Validate shipping info
     if (currentStep === '1' && nextStep === '2') {
         if (validateShippingForm()) {
             goToStep(nextStep);
         }
     }
-    // Step 2 to Step 3: Validate invoice download and payment proof
     else if (currentStep === '2' && nextStep === '3') {
         const proofInput = document.getElementById('proof-payment');
 
@@ -306,11 +304,9 @@ function validateStepTransition(button, nextStep) {
             return;
         }
 
-        // Show processing spinner
         const spinner = document.querySelector('.upload-spinner');
         if (spinner) spinner.style.display = 'flex';
 
-        // Process payment proof
         processPaymentProof(proofInput.files[0])
             .then(success => {
                 if (success) {
@@ -319,13 +315,11 @@ function validateStepTransition(button, nextStep) {
                 }
             });
     }
-    // Other transitions
     else {
         goToStep(nextStep);
     }
 }
 
-// Validate shipping form
 function validateShippingForm() {
     const requiredFields = ['full-name', 'email', 'phone', 'address', 'city', 'postal-code', 'province'];
     let isValid = true;
@@ -338,7 +332,6 @@ function validateShippingForm() {
         }
     });
 
-    // Validate email format
     const emailField = document.getElementById('email');
     if (emailField && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
         showCartNotification('Please enter a valid email address', 'error');
@@ -348,13 +341,11 @@ function validateShippingForm() {
     return isValid;
 }
 
-// Process payment proof upload and submit order
 async function processPaymentProof(file) {
     try {
         const spinner = document.querySelector('.upload-spinner');
         if (spinner) spinner.style.display = 'flex';
 
-        // Get customer details from the form
         const customerName = document.getElementById('full-name')?.value || 'Customer';
         const customerEmail = document.getElementById('email')?.value || 'No email provided';
         const customerPhone = document.getElementById('phone')?.value || 'No phone provided';
@@ -363,7 +354,6 @@ async function processPaymentProof(file) {
         const customerPostalCode = document.getElementById('postal-code')?.value || 'No postal code provided';
         const customerProvince = document.getElementById('province')?.value || 'No province provided';
 
-        // Prepare order details with special pricing applied
         let orderDetails = cart.map(item => {
             const price = calculateItemPrice(item.id, item.quantity);
             return `${item.name} (Qty: ${item.quantity}) - R${price.toFixed(2)}`;
@@ -375,7 +365,6 @@ async function processPaymentProof(file) {
         
         const total = subtotal + STANDARD_SHIPPING_FEE;
 
-        // Create FormData for order submission
         const orderFormData = new FormData();
         orderFormData.append('_cc', 'cheyliasingh3@gmail.com');
         orderFormData.append('_subject', `New Order: ${orderReference.textContent}`);
@@ -389,7 +378,6 @@ async function processPaymentProof(file) {
         orderFormData.append('Shipping Fee', `R${STANDARD_SHIPPING_FEE.toFixed(2)}`);
         orderFormData.append('Total Amount', `R${total.toFixed(2)}`);
 
-        // Send order details first
         const orderResponse = await fetch('https://formsubmit.co/ajax/cheyliasingh3@gmail.com', {
             method: 'POST',
             body: orderFormData
@@ -399,7 +387,6 @@ async function processPaymentProof(file) {
             throw new Error('Failed to submit order details');
         }
 
-        // Then send payment proof if file exists
         if (file) {
             const paymentFormData = new FormData();
             paymentFormData.append('_cc', 'cheyliasingh3@gmail.com');
@@ -432,9 +419,7 @@ async function processPaymentProof(file) {
     }
 }
 
-// Navigate between checkout steps with enhanced UI
 function goToStep(stepNumber) {
-    // Update step indicators
     document.querySelectorAll('.step').forEach(step => {
         step.classList.remove('current');
         if (parseInt(step.getAttribute('data-step')) <= parseInt(stepNumber)) {
@@ -444,11 +429,9 @@ function goToStep(stepNumber) {
         }
     });
     
-    // Mark current step
     const currentStep = document.querySelector(`.step[data-step="${stepNumber}"]`);
     if (currentStep) currentStep.classList.add('current');
 
-    // Show/hide steps
     checkoutSteps.forEach(step => {
         if (step.classList.contains(`step-${stepNumber}`)) {
             step.classList.add('active');
@@ -457,17 +440,13 @@ function goToStep(stepNumber) {
         }
     });
 
-    // Scroll to top of modal
     document.querySelector('.modal-content').scrollTop = 0;
 }
 
-// Generate professional PDF invoice with return link and auto-download
 function generatePDFInvoice() {
-    // Check if jsPDF is already loaded
     if (window.jspdf) {
         createPDF();
     } else {
-        // Load jsPDF library dynamically
         const script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
         script.onload = createPDF;
@@ -484,7 +463,7 @@ function generatePDFInvoice() {
 
             // Invoice header
             doc.setFontSize(22);
-            doc.setTextColor(239, 93, 168); // CHE pink color
+            doc.setTextColor(239, 93, 168);
             doc.text('CHE COSMETICS', 105, 20, { align: 'center' });
 
             doc.setFontSize(12);
@@ -497,8 +476,11 @@ function generatePDFInvoice() {
             doc.text('INVOICE', 105, 45, { align: 'center' });
 
             // Invoice details
+            const invoiceNumber = orderReference.textContent;
+            sessionStorage.setItem('currentInvoiceNumber', invoiceNumber);
+            
             doc.setFontSize(10);
-            doc.text(`Invoice #: ${orderReference.textContent}`, 15, 55);
+            doc.text(`Invoice #: ${invoiceNumber}`, 15, 55);
             doc.text(`Date: ${new Date().toLocaleDateString()}`, 15, 60);
 
             // Customer details
@@ -520,7 +502,7 @@ function generatePDFInvoice() {
             doc.text('Qty', 140, 100);
             doc.text('Total', 170, 100);
 
-            // Table rows with special pricing applied
+            // Table rows
             doc.setTextColor(0, 0, 0);
             let y = 110;
             let subtotal = 0;
@@ -529,7 +511,6 @@ function generatePDFInvoice() {
                 const itemTotal = calculateItemPrice(item.id, item.quantity);
                 subtotal += itemTotal;
 
-                // Check if this item has special pricing
                 const specialPricing = SPECIAL_PRICING[item.id];
                 let priceText = `R${(itemTotal / item.quantity).toFixed(2)}`;
                 
@@ -582,20 +563,25 @@ function generatePDFInvoice() {
             y += 7;
             doc.text('Branch Code: 470010', 20, y);
             y += 7;
-            doc.text(`Reference: ${orderReference.textContent}`, 20, y);
+            doc.text(`Reference: ${invoiceNumber}`, 20, y);
 
             // Set markers for return detection
             sessionStorage.setItem('returningFromInvoice', 'true');
             const returnUrl = `${window.location.origin}${window.location.pathname}?fromInvoice=true`;
 
-            // Return to site link
+            // Enhanced return to site link
             y += 15;
-            doc.setFontSize(10);
-            doc.setTextColor(0, 0, 255);
-            doc.textWithLink('Click here to return and upload payment proof', 105, y, { 
+            doc.setFontSize(12);
+            doc.setTextColor(239, 93, 168);
+            doc.setFont('helvetica', 'bold');
+            doc.textWithLink('RETURN TO UPLOAD PAYMENT PROOF', 105, y, { 
                 url: returnUrl,
                 align: 'center'
             });
+            y += 7;
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Click the link above to return and upload your payment proof', 105, y, { align: 'center' });
 
             // Thank you message
             y += 10;
@@ -607,24 +593,20 @@ function generatePDFInvoice() {
             const pdfOutput = doc.output('blob');
             const pdfUrl = URL.createObjectURL(pdfOutput);
             
-            // Trigger download in the current window
             const a = document.createElement('a');
             a.href = pdfUrl;
-            a.download = `CHE_Invoice_${orderReference.textContent}.pdf`;
+            a.download = `CHE_Invoice_${invoiceNumber}.pdf`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             
-            // Clean up
             setTimeout(() => {
                 URL.revokeObjectURL(pdfUrl);
             }, 100);
 
-            // Mark invoice as downloaded
             invoiceDownloaded = true;
             showCartNotification('Invoice generated successfully', 'success');
 
-            // Update download button
             const downloadBtn = document.querySelector('.invoice-download-btn');
             if (downloadBtn) {
                 downloadBtn.innerHTML = '<i class="fas fa-check-circle"></i> Invoice Generated';
@@ -632,7 +614,6 @@ function generatePDFInvoice() {
                 downloadBtn.disabled = true;
             }
 
-            // Send invoice details via email
             sendInvoiceEmail();
 
         } catch (error) {
@@ -642,14 +623,11 @@ function generatePDFInvoice() {
     }
 }
 
-// Function to send invoice details via email
 async function sendInvoiceEmail() {
     try {
-        // Get customer details from the form
         const customerName = document.getElementById('full-name')?.value || 'Customer';
         const customerEmail = document.getElementById('email')?.value || 'No email provided';
         
-        // Prepare order details with special pricing applied
         let orderDetails = cart.map(item => {
             const price = calculateItemPrice(item.id, item.quantity);
             return `${item.name} (Qty: ${item.quantity}) - R${price.toFixed(2)}`;
@@ -661,7 +639,6 @@ async function sendInvoiceEmail() {
         
         const total = subtotal + STANDARD_SHIPPING_FEE;
 
-        // Create FormData for email submission
         const emailFormData = new FormData();
         emailFormData.append('_cc', 'cheyliasingh3@gmail.com');
         emailFormData.append('_subject', `New Invoice Generated: ${orderReference.textContent}`);
@@ -672,9 +649,8 @@ async function sendInvoiceEmail() {
         emailFormData.append('Subtotal', `R${subtotal.toFixed(2)}`);
         emailFormData.append('Shipping Fee', `R${STANDARD_SHIPPING_FEE.toFixed(2)}`);
         emailFormData.append('Total Amount', `R${total.toFixed(2)}`);
-        emailFormData.append('_template', 'table'); // Use table template for better formatting
+        emailFormData.append('_template', 'table');
 
-        // Send email via FormSubmit
         const response = await fetch('https://formsubmit.co/ajax/cheyliasingh3@gmail.com', {
             method: 'POST',
             body: emailFormData
@@ -688,32 +664,25 @@ async function sendInvoiceEmail() {
 
     } catch (error) {
         console.error('Email sending error:', error);
-        // Don't show error to user as it doesn't affect their experience
     }
 }
 
-// Close checkout modal
 function closeCheckoutModal() {
     checkoutModal.style.display = 'none';
     document.body.style.overflow = '';
 }
 
-// Complete order and clear cart
 function completeOrder() {
     const email = document.getElementById('email')?.value || 'your@email.com';
     if (confirmationEmail) confirmationEmail.textContent = email;
 
-    // Clear cart only if we're actually completing the order
     if (document.querySelector('.step-3.active')) {
         cart = [];
         saveCart();
         updateCartCount();
-        
-        // Set flag to suppress empty cart notification when redirecting
         sessionStorage.setItem('suppressCartNotification', 'true');
     }
     
-    // Add event listener to continue shopping button if it exists
     const continueShoppingBtn = document.querySelector('.continue-shopping-btn');
     if (continueShoppingBtn) {
         continueShoppingBtn.addEventListener('click', function(e) {
@@ -724,7 +693,6 @@ function completeOrder() {
     }
 }
 
-// Add item to cart
 function addToCart(product) {
     const existingItem = cart.find(item => item.id === product.id);
 
@@ -742,7 +710,6 @@ function addToCart(product) {
     showCartNotification(`${product.name} added to cart`);
 }
 
-// Remove item from cart
 function removeFromCart(productId) {
     cart = cart.filter(item => item.id !== productId);
     saveCart();
@@ -750,7 +717,6 @@ function removeFromCart(productId) {
     renderCartItems();
 }
 
-// Update item quantity in cart
 function updateCartItemQuantity(productId, newQuantity) {
     const item = cart.find(item => item.id === productId);
 
@@ -766,12 +732,10 @@ function updateCartItemQuantity(productId, newQuantity) {
     renderCartItems();
 }
 
-// Save cart to localStorage
 function saveCart() {
     localStorage.setItem('cheCosmeticsCart', JSON.stringify(cart));
 }
 
-// Update cart count in header
 function updateCartCount() {
     const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -784,7 +748,6 @@ function updateCartCount() {
     });
 }
 
-// Render cart items on cart page with special pricing
 function renderCartItems() {
     if (!cartItemsContainer) return;
 
@@ -809,7 +772,6 @@ function renderCartItems() {
         const itemTotal = calculateItemPrice(item.id, item.quantity);
         subtotal += itemTotal;
 
-        // Check if this item has special pricing
         const specialPricing = SPECIAL_PRICING[item.id];
         let priceText = `R${(itemTotal / item.quantity).toFixed(2)} each`;
         let specialPriceText = '';
@@ -857,7 +819,6 @@ function renderCartItems() {
     if (subtotalElement) subtotalElement.textContent = `R${subtotal.toFixed(2)}`;
     if (totalElement) totalElement.textContent = `R${(subtotal + STANDARD_SHIPPING_FEE).toFixed(2)}`;
 
-    // Add event listeners to quantity controls
     document.querySelectorAll('.quantity-btn').forEach(btn => {
         btn.addEventListener('click', function () {
             const productId = this.getAttribute('data-id');
@@ -892,9 +853,7 @@ function renderCartItems() {
     });
 }
 
-// Show cart notification with suppression check
 function showCartNotification(message, type = 'success') {
-    // Don't show empty cart notifications if suppressed
     if (message === 'Your cart is empty' && sessionStorage.getItem('suppressCartNotification') === 'true') {
         return;
     }
@@ -1056,6 +1015,24 @@ style.textContent = `
     }
     .email-status.error {
         color: #f44336;
+    }
+    .upload-feedback {
+        margin-top: 10px;
+        padding: 10px;
+        background: #e8f5e9;
+        border-radius: 4px;
+        color: #2e7d32;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .upload-feedback i {
+        color: #2e7d32;
+    }
+    .upload-hint {
+        font-size: 0.8em;
+        color: #666;
+        margin-top: 5px;
     }
     @keyframes spin {
         0% { transform: rotate(0deg); }
