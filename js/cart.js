@@ -119,18 +119,20 @@ function openCheckoutModal(fromInvoice = false) {
 }
 
 function generateOrderReference() {
-    if (!orderReference) return; // Safety check
-    
-    // Clear any existing invoice number from localStorage if needed
-    // localStorage.removeItem('currentInvoiceNumber'); // Uncomment if you want fresh numbers each time
-    
+    const orderRefElements = document.querySelectorAll('.order-reference');
+    if (!orderRefElements.length) return;
+
     // Generate a new number only if one doesn't exist
-    if (!orderReference.textContent || orderReference.textContent === 'CHE-1234') {
-        const timestamp = Date.now().toString().slice(-4); // Last 4 digits of current time
-        const randomNum = Math.floor(100 + Math.random() * 900); // 3 random digits
+    if (!orderRefElements[0].textContent || orderRefElements[0].textContent === '1234') {
+        const timestamp = Date.now().toString().slice(-4);
+        const randomNum = Math.floor(100 + Math.random() * 900);
         const invoiceNumber = `CHE-${timestamp}${randomNum}`;
 
-        orderReference.textContent = invoiceNumber;
+        // Update ALL elements with class 'order-reference'
+        orderRefElements.forEach(el => {
+            el.textContent = invoiceNumber;
+        });
+
         if (orderNumber) {
             orderNumber.textContent = invoiceNumber;
         }
