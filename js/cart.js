@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // Enhanced return from invoice check with invoice number matching
 function checkReturnFromInvoice() {
     const urlParams = new URLSearchParams(window.location.search);
-    const fromInvoice = urlParams.has('fromInvoice') || 
+    const fromInvoice = urlParams.has('fromInvoice') ||
         localStorage.getItem('returningFromInvoice') === 'true';
 
     if (fromInvoice) {
@@ -126,7 +126,7 @@ function generateOrderReference() {
             const timestamp = Date.now().toString().slice(-4); // Last 4 digits of current time
             const randomNum = Math.floor(100 + Math.random() * 900); // 3 random digits
             const invoiceNumber = `CHE-${timestamp}${randomNum}`;
-            
+
             orderReference.textContent = invoiceNumber;
             if (orderNumber) {
                 orderNumber.textContent = invoiceNumber;
@@ -135,7 +135,7 @@ function generateOrderReference() {
         }
     }
 }
-}
+
 
 function calculateItemPrice(productId, quantity) {
     const specialPricing = SPECIAL_PRICING[productId];
