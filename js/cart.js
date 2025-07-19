@@ -120,15 +120,21 @@ function openCheckoutModal(fromInvoice = false) {
 
 function generateOrderReference() {
     if (orderReference) {
-        // Only generate new reference if one doesn't exist in local storage
         const savedInvoiceNumber = localStorage.getItem('currentInvoiceNumber');
         if (!savedInvoiceNumber) {
-            orderReference.textContent = 'CHE-' + Math.floor(1000 + Math.random() * 9000);
+            // Generate a unique number using timestamp + random digits
+            const timestamp = Date.now().toString().slice(-4); // Last 4 digits of current time
+            const randomNum = Math.floor(100 + Math.random() * 900); // 3 random digits
+            const invoiceNumber = `CHE-${timestamp}${randomNum}`;
+            
+            orderReference.textContent = invoiceNumber;
             if (orderNumber) {
-                orderNumber.textContent = orderReference.textContent;
+                orderNumber.textContent = invoiceNumber;
             }
+            localStorage.setItem('currentInvoiceNumber', invoiceNumber);
         }
     }
+}
 }
 
 function calculateItemPrice(productId, quantity) {
