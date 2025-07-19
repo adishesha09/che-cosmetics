@@ -730,7 +730,7 @@ function completeOrder() {
     }
 }
 
-function addToCart(product) {
+window.addToCart = function(product) {
     const existingItem = cart.find(item => item.id === product.id);
 
     if (existingItem) {
