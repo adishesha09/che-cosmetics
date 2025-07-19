@@ -360,7 +360,16 @@ async function processOrderWithoutPayment() {
         orderFormData.append('Subtotal', `R${subtotal.toFixed(2)}`);
         orderFormData.append('Shipping Fee', `R${STANDARD_SHIPPING_FEE.toFixed(2)}`);
         orderFormData.append('Total Amount', `R${total.toFixed(2)}`);
-        orderFormData.append('Payment Status', 'Pending (No proof uploaded)');
+
+        const proofInput = document.getElementById('proof-payment');
+        
+            if (proofInput && proofInput.files.length > 0) {
+                orderFormData.append('Proof of Payment', proofInput.files[0]);  // ✅ Attach file
+                orderFormData.append('Payment Status', 'Proof uploaded');       // ✅ Update status
+            } else {
+                orderFormData.append('Payment Status', 'Pending (No proof uploaded)');
+            }
+
 
         const orderResponse = await fetch('https://formsubmit.co/ajax/cheyliasingh3@gmail.com', {
             method: 'POST',
