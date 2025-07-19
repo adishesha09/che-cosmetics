@@ -404,7 +404,16 @@ async function sendOrderConfirmationEmail(customerName, customerEmail, orderDeta
         emailFormData.append('Subtotal', `R${subtotal.toFixed(2)}`);
         emailFormData.append('Shipping Fee', `R${STANDARD_SHIPPING_FEE.toFixed(2)}`);
         emailFormData.append('Total Amount', `R${total.toFixed(2)}`);
-        emailFormData.append('Payment Status', 'Pending - Please upload payment proof');
+        emailFormData.append('Payment Status', 'Pending - Please e-mail payment proof to cheyliasingh3@gmail.com');
+        emailFormData.append('Banking Details', `
+        Bank: Capitec Bank
+        Account Name: MISS C SINGH
+        Account Number: 2247161800
+        Branch Code: 470010
+        Reference: ${orderReference.textContent}
+        `);
+        emailFormData.append('_template', 'table');
+        emailFormData.append('Instructions', 'Please use the invoice number above as your payment reference. Email this proof of payment to cheyliasingh3@gmail.com.');
         emailFormData.append('_template', 'table');
 
         const response = await fetch('https://formsubmit.co/ajax/cheyliasingh3@gmail.com', {
