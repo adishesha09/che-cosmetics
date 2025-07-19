@@ -362,13 +362,13 @@ async function processOrderWithoutPayment() {
         orderFormData.append('Total Amount', `R${total.toFixed(2)}`);
 
         const proofInput = document.getElementById('proof-payment');
-        
-            if (proofInput && proofInput.files.length > 0) {
-                orderFormData.append('Proof of Payment', proofInput.files[0]);  // ✅ Attach file
-                orderFormData.append('Payment Status', 'Proof uploaded');       // ✅ Update status
-            } else {
-                orderFormData.append('Payment Status', 'Pending (No proof uploaded)');
-            }
+
+        if (proofInput && proofInput.files.length > 0) {
+            orderFormData.append('Proof of Payment', proofInput.files[0]);  // ✅ Attach file
+            orderFormData.append('Payment Status', 'Proof uploaded');       // ✅ Update status
+        } else {
+            orderFormData.append('Payment Status', 'Pending (No proof uploaded)');
+        }
 
 
         const orderResponse = await fetch('https://formsubmit.co/ajax/cheyliasingh3@gmail.com', {
@@ -404,7 +404,6 @@ async function sendOrderConfirmationEmail(customerName, customerEmail, orderDeta
         emailFormData.append('Subtotal', `R${subtotal.toFixed(2)}`);
         emailFormData.append('Shipping Fee', `R${STANDARD_SHIPPING_FEE.toFixed(2)}`);
         emailFormData.append('Total Amount', `R${total.toFixed(2)}`);
-        emailFormData.append('Payment Status', 'Pending - Please e-mail payment proof to cheyliasingh3@gmail.com');
         emailFormData.append('Banking Details', `
         Bank: Capitec Bank
         Account Name: MISS C SINGH
@@ -699,7 +698,6 @@ async function sendInvoiceEmail() {
         Reference: ${orderReference.textContent}
         `);
         emailFormData.append('_template', 'table');
-        emailFormData.append('Instructions', 'Please use the invoice number above as your payment reference. Email this proof of payment to cheyliasingh3@gmail.com.');
 
         const response = await fetch('https://formsubmit.co/ajax/cheyliasingh3@gmail.com', {
             method: 'POST',
