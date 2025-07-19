@@ -578,7 +578,14 @@ function generatePDFInvoice() {
             y += 7;
             doc.setFontSize(10);
             doc.setTextColor(0, 0, 0);
-            doc.text('After making payment, return to this page and upload your proof of payment.', 105, y, { align: 'center' });
+            doc.setTextColor(0, 0, 255); // Blue color for link
+            doc.textWithLink('Click here to return to payment upload', 105, y, {
+                align: 'center',
+                url: returnUrl
+            });
+            doc.setTextColor(0, 0, 0); // Reset color
+            y += 7;
+            doc.text('and upload your proof of payment.', 105, y, { align: 'center' });
 
             // Thank you message
             y += 10;
