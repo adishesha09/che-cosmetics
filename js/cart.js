@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
     generateOrderReference();
     addInvoiceDownloadButton();
     checkReturnFromInvoice();
-    
+
     // Check if we should suppress the empty cart notification
     if (sessionStorage.getItem('suppressCartNotification') === 'true') {
         sessionStorage.removeItem('suppressCartNotification');
@@ -74,14 +74,14 @@ document.addEventListener('DOMContentLoaded', function () {
 // Enhanced return from invoice check with invoice number matching
 function checkReturnFromInvoice() {
     const urlParams = new URLSearchParams(window.location.search);
-    const fromInvoice = urlParams.has('fromInvoice') || 
-                      sessionStorage.getItem('returningFromInvoice') === 'true';
-    
+    const fromInvoice = urlParams.has('fromInvoice') ||
+        sessionStorage.getItem('returningFromInvoice') === 'true';
+
     if (fromInvoice) {
         // Clean up markers
         sessionStorage.removeItem('returningFromInvoice');
         history.replaceState(null, '', window.location.pathname);
-        
+
         // Restore invoice number from session storage
         const savedInvoiceNumber = sessionStorage.getItem('currentInvoiceNumber');
         if (savedInvoiceNumber && orderReference) {
@@ -90,10 +90,10 @@ function checkReturnFromInvoice() {
                 orderNumber.textContent = savedInvoiceNumber;
             }
         }
-        
+
         // Open checkout modal immediately
         openCheckoutModal(true);
-        
+
         // Navigate to step 2 and show notification
         setTimeout(() => {
             goToStep('2');
@@ -111,7 +111,7 @@ function openCheckoutModal(fromInvoice = false) {
 
     checkoutModal.style.display = 'block';
     document.body.style.overflow = 'hidden';
-    
+
     if (!fromInvoice) {
         goToStep('1');
     }
@@ -133,20 +133,20 @@ function generateOrderReference() {
 
 function calculateItemPrice(productId, quantity) {
     const specialPricing = SPECIAL_PRICING[productId];
-    
+
     if (!specialPricing) {
         const item = cart.find(item => item.id === productId);
         return item ? parseFloat(item.price.replace('R', '')) * quantity : 0;
     }
 
     const { singlePrice, bulkQuantity, bulkPrice } = specialPricing;
-    
+
     if (quantity >= bulkQuantity) {
         const bulkSets = Math.floor(quantity / bulkQuantity);
         const remainingItems = quantity % bulkQuantity;
         return (bulkSets * bulkPrice) + (remainingItems * singlePrice);
     }
-    
+
     return quantity * singlePrice;
 }
 
@@ -201,7 +201,7 @@ function setupEventListeners() {
         });
     }
 
-    window.addEventListener('pageshow', function(event) {
+    window.addEventListener('pageshow', function (event) {
         if (event.persisted || performance.navigation.type === 2) {
             const activeStep = document.querySelector('.checkout-step.active');
             if (activeStep && activeStep.classList.contains('step-2')) {
@@ -251,7 +251,7 @@ function addInvoiceDownloadButton() {
     const paymentDoneBtn = document.createElement('button');
     paymentDoneBtn.className = 'cta-button payment-done-btn';
     paymentDoneBtn.innerHTML = '<i class="fas fa-check-circle"></i> I\'ve Made Payment';
-    paymentDoneBtn.addEventListener('click', function() {
+    paymentDoneBtn.addEventListener('click', function () {
         document.getElementById('proof-payment').click();
     });
 
@@ -264,8 +264,8 @@ function addInvoiceDownloadButton() {
         firstStep.insertBefore(downloadContainer, firstStep.firstChild);
     }
 
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
+    const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
             if (mutation.attributeName === 'class') {
                 const currentClass = mutation.target.className;
                 if (currentClass.includes('active') && currentClass.includes('step-2')) {
@@ -362,7 +362,7 @@ async function processPaymentProof(file) {
         const subtotal = cart.reduce((total, item) => {
             return total + calculateItemPrice(item.id, item.quantity);
         }, 0);
-        
+
         const total = subtotal + STANDARD_SHIPPING_FEE;
 
         const orderFormData = new FormData();
@@ -428,7 +428,7 @@ function goToStep(stepNumber) {
             step.classList.remove('active');
         }
     });
-    
+
     const currentStep = document.querySelector(`.step[data-step="${stepNumber}"]`);
     if (currentStep) currentStep.classList.add('current');
 
@@ -478,7 +478,7 @@ function generatePDFInvoice() {
             // Invoice details
             const invoiceNumber = orderReference.textContent;
             sessionStorage.setItem('currentInvoiceNumber', invoiceNumber);
-            
+
             doc.setFontSize(10);
             doc.text(`Invoice #: ${invoiceNumber}`, 15, 55);
             doc.text(`Date: ${new Date().toLocaleDateString()}`, 15, 60);
@@ -513,11 +513,11 @@ function generatePDFInvoice() {
 
                 const specialPricing = SPECIAL_PRICING[item.id];
                 let priceText = `R${(itemTotal / item.quantity).toFixed(2)}`;
-                
+
                 if (specialPricing && item.quantity >= specialPricing.bulkQuantity) {
                     const bulkSets = Math.floor(item.quantity / specialPricing.bulkQuantity);
                     const remainingItems = item.quantity % specialPricing.bulkQuantity;
-                    
+
                     if (remainingItems > 0) {
                         priceText = `${bulkSets} × R${specialPricing.bulkPrice.toFixed(2)} + ${remainingItems} × R${specialPricing.singlePrice.toFixed(2)}`;
                     } else {
@@ -574,14 +574,11 @@ function generatePDFInvoice() {
             doc.setFontSize(12);
             doc.setTextColor(239, 93, 168);
             doc.setFont('helvetica', 'bold');
-            doc.textWithLink('RETURN TO UPLOAD PAYMENT PROOF', 105, y, { 
-                url: returnUrl,
-                align: 'center'
-            });
+            doc.text('PAYMENT INSTRUCTIONS CONTINUED', 105, y, { align: 'center' });
             y += 7;
             doc.setFontSize(10);
-            doc.setTextColor(100, 100, 100);
-            doc.text('Click the link above to return and upload your payment proof', 105, y, { align: 'center' });
+            doc.setTextColor(0, 0, 0);
+            doc.text('After making payment, return to this page and upload your proof of payment.', 105, y, { align: 'center' });
 
             // Thank you message
             y += 10;
@@ -592,26 +589,51 @@ function generatePDFInvoice() {
             // Generate PDF output
             const pdfOutput = doc.output('blob');
             const pdfUrl = URL.createObjectURL(pdfOutput);
-            
+
             const a = document.createElement('a');
             a.href = pdfUrl;
             a.download = `CHE_Invoice_${invoiceNumber}.pdf`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            
+
             setTimeout(() => {
                 URL.revokeObjectURL(pdfUrl);
             }, 100);
 
             invoiceDownloaded = true;
-            showCartNotification('Invoice generated successfully', 'success');
+            showCartNotification('Invoice downloaded successfully', 'success');
 
+            // Update the download button
             const downloadBtn = document.querySelector('.invoice-download-btn');
             if (downloadBtn) {
-                downloadBtn.innerHTML = '<i class="fas fa-check-circle"></i> Invoice Generated';
+                downloadBtn.innerHTML = '<i class="fas fa-check-circle"></i> Invoice Downloaded';
                 downloadBtn.classList.add('downloaded');
                 downloadBtn.disabled = true;
+            }
+
+            // Add a prominent "Return to Payment" button
+            const returnContainer = document.querySelector('.invoice-download-container');
+            if (returnContainer) {
+                const existingReturnBtn = returnContainer.querySelector('.return-to-payment-btn');
+                if (!existingReturnBtn) {
+                    const returnBtn = document.createElement('button');
+                    returnBtn.className = 'cta-button return-to-payment-btn';
+                    returnBtn.innerHTML = '<i class="fas fa-arrow-circle-left"></i> Return to Payment Upload';
+                    returnBtn.addEventListener('click', function () {
+                        // Focus on the payment proof upload field
+                        document.getElementById('proof-payment')?.focus();
+                        showCartNotification('Please upload your payment proof', 'info');
+                    });
+
+                    // Insert after the download button
+                    const paymentDoneBtn = returnContainer.querySelector('.payment-done-btn');
+                    if (paymentDoneBtn) {
+                        returnContainer.insertBefore(returnBtn, paymentDoneBtn.nextSibling);
+                    } else {
+                        returnContainer.appendChild(returnBtn);
+                    }
+                }
             }
 
             sendInvoiceEmail();
@@ -623,11 +645,12 @@ function generatePDFInvoice() {
     }
 }
 
+
 async function sendInvoiceEmail() {
     try {
         const customerName = document.getElementById('full-name')?.value || 'Customer';
         const customerEmail = document.getElementById('email')?.value || 'No email provided';
-        
+
         let orderDetails = cart.map(item => {
             const price = calculateItemPrice(item.id, item.quantity);
             return `${item.name} (Qty: ${item.quantity}) - R${price.toFixed(2)}`;
@@ -636,7 +659,7 @@ async function sendInvoiceEmail() {
         const subtotal = cart.reduce((total, item) => {
             return total + calculateItemPrice(item.id, item.quantity);
         }, 0);
-        
+
         const total = subtotal + STANDARD_SHIPPING_FEE;
 
         const emailFormData = new FormData();
@@ -682,10 +705,10 @@ function completeOrder() {
         updateCartCount();
         sessionStorage.setItem('suppressCartNotification', 'true');
     }
-    
+
     const continueShoppingBtn = document.querySelector('.continue-shopping-btn');
     if (continueShoppingBtn) {
-        continueShoppingBtn.addEventListener('click', function(e) {
+        continueShoppingBtn.addEventListener('click', function (e) {
             e.preventDefault();
             sessionStorage.setItem('suppressCartNotification', 'true');
             window.location.href = 'index.html';
@@ -775,17 +798,17 @@ function renderCartItems() {
         const specialPricing = SPECIAL_PRICING[item.id];
         let priceText = `R${(itemTotal / item.quantity).toFixed(2)} each`;
         let specialPriceText = '';
-        
+
         if (specialPricing && item.quantity >= specialPricing.bulkQuantity) {
             const bulkSets = Math.floor(item.quantity / specialPricing.bulkQuantity);
             const remainingItems = item.quantity % specialPricing.bulkQuantity;
-            
+
             if (remainingItems > 0) {
                 priceText = `${bulkSets} × R${specialPricing.bulkPrice.toFixed(2)} (${specialPricing.bulkQuantity} items) + ${remainingItems} × R${specialPricing.singlePrice.toFixed(2)}`;
             } else {
                 priceText = `${bulkSets} × R${specialPricing.bulkPrice.toFixed(2)} (${specialPricing.bulkQuantity} items)`;
             }
-            
+
             specialPriceText = `<p class="special-price-notice"><i class="fas fa-tag"></i> Special: Buy ${specialPricing.bulkQuantity} for R${specialPricing.bulkPrice.toFixed(2)}</p>`;
         }
 
@@ -857,7 +880,7 @@ function showCartNotification(message, type = 'success') {
     if (message === 'Your cart is empty' && sessionStorage.getItem('suppressCartNotification') === 'true') {
         return;
     }
-    
+
     const notification = document.createElement('div');
     notification.className = `cart-notification ${type}`;
     notification.innerHTML = `
@@ -1016,6 +1039,16 @@ style.textContent = `
     .email-status.error {
         color: #f44336;
     }
+
+    .return-to-payment-btn {
+    margin-top: 10px;
+    background-color: #2196F3 !important;
+    width: 100%;
+}
+
+.return-to-payment-btn:hover {
+    background-color: #0b7dda !important;
+}
     .upload-feedback {
         margin-top: 10px;
         padding: 10px;
