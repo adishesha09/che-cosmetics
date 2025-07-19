@@ -4,7 +4,7 @@
  * Updated with special pricing for bulk purchases and enhanced UX
  * Includes robust return-from-PDF notification system
  * Now with automatic PDF download in new tab and invoice emailing
- * Version 2.2 - Enhanced invoice matching and payment proof upload
+ * Version 2.3 - Fixed PDF return-to-step-2 functionality
  */
 
 // Cart data structure
@@ -74,16 +74,16 @@ document.addEventListener('DOMContentLoaded', function () {
 // Enhanced return from invoice check with invoice number matching
 function checkReturnFromInvoice() {
     const urlParams = new URLSearchParams(window.location.search);
-    const fromInvoice = urlParams.has('fromInvoice') ||
-        sessionStorage.getItem('returningFromInvoice') === 'true';
+    const fromInvoice = urlParams.has('fromInvoice') || 
+        localStorage.getItem('returningFromInvoice') === 'true';
 
     if (fromInvoice) {
         // Clean up markers
-        sessionStorage.removeItem('returningFromInvoice');
+        localStorage.removeItem('returningFromInvoice');
         history.replaceState(null, '', window.location.pathname);
 
-        // Restore invoice number from session storage
-        const savedInvoiceNumber = sessionStorage.getItem('currentInvoiceNumber');
+        // Restore invoice number from local storage
+        const savedInvoiceNumber = localStorage.getItem('currentInvoiceNumber');
         if (savedInvoiceNumber && orderReference) {
             orderReference.textContent = savedInvoiceNumber;
             if (orderNumber) {
@@ -120,8 +120,8 @@ function openCheckoutModal(fromInvoice = false) {
 
 function generateOrderReference() {
     if (orderReference) {
-        // Only generate new reference if one doesn't exist in session storage
-        const savedInvoiceNumber = sessionStorage.getItem('currentInvoiceNumber');
+        // Only generate new reference if one doesn't exist in local storage
+        const savedInvoiceNumber = localStorage.getItem('currentInvoiceNumber');
         if (!savedInvoiceNumber) {
             orderReference.textContent = 'CHE-' + Math.floor(1000 + Math.random() * 9000);
             if (orderNumber) {
@@ -477,7 +477,8 @@ function generatePDFInvoice() {
 
             // Invoice details
             const invoiceNumber = orderReference.textContent;
-            sessionStorage.setItem('currentInvoiceNumber', invoiceNumber);
+            localStorage.setItem('currentInvoiceNumber', invoiceNumber);
+            localStorage.setItem('returningFromInvoice', 'true');
 
             doc.setFontSize(10);
             doc.text(`Invoice #: ${invoiceNumber}`, 15, 55);
@@ -566,8 +567,8 @@ function generatePDFInvoice() {
             doc.text(`Reference: ${invoiceNumber}`, 20, y);
 
             // Set markers for return detection
-            sessionStorage.setItem('returningFromInvoice', 'true');
             const returnUrl = `${window.location.origin}${window.location.pathname}?fromInvoice=true`;
+            console.log('Return URL:', returnUrl);
 
             // Enhanced return to site link
             y += 15;
@@ -577,7 +578,6 @@ function generatePDFInvoice() {
             doc.text('PAYMENT INSTRUCTIONS CONTINUED', 105, y, { align: 'center' });
             y += 7;
             doc.setFontSize(10);
-            doc.setTextColor(0, 0, 0);
             doc.setTextColor(0, 0, 255); // Blue color for link
             doc.textWithLink('Click here to return to payment upload', 105, y, {
                 align: 'center',
@@ -651,7 +651,6 @@ function generatePDFInvoice() {
         }
     }
 }
-
 
 async function sendInvoiceEmail() {
     try {
