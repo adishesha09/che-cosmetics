@@ -234,7 +234,7 @@ function addInvoiceDownloadButton() {
         <div class="instruction-step">
             <i class="fas fa-file-invoice-dollar"></i>
             <h4>Invoice Generated</h4>
-            <p>Your invoice has been created with all payment details.</p>
+            <p>Your invoice will be created with all payment details.</p>
         </div>
         <div class="instruction-step">
             <i class="fas fa-money-bill-wave"></i>
@@ -268,24 +268,6 @@ function addInvoiceDownloadButton() {
     const firstStep = step2.querySelector('.payment-step');
     if (firstStep) {
         firstStep.insertBefore(downloadContainer, firstStep.firstChild);
-    }
-
-    const observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-            if (mutation.attributeName === 'class') {
-                const currentClass = mutation.target.className;
-                if (currentClass.includes('active') && currentClass.includes('step-2')) {
-                    if (!invoiceDownloaded) {
-                        generatePDFInvoice();
-                    }
-                }
-            }
-        });
-    });
-
-    const step2Element = document.querySelector('.step-2');
-    if (step2Element) {
-        observer.observe(step2Element, { attributes: true });
     }
 }
 
@@ -730,7 +712,7 @@ function completeOrder() {
     }
 }
 
-window.addToCart = function(product) {
+window.addToCart = function (product) {
     const existingItem = cart.find(item => item.id === product.id);
 
     if (existingItem) {
