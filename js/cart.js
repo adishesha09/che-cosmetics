@@ -690,6 +690,7 @@ async function sendInvoiceEmail() {
         Reference: ${orderReference.textContent}
         `);
         emailFormData.append('_template', 'table');
+        emailFormData.append('Instructions', 'Please use the invoice number above as your payment reference. Email this proof of payment to cheyliasingh3@gmail.com.');
 
         const response = await fetch('https://formsubmit.co/ajax/cheyliasingh3@gmail.com', {
             method: 'POST',
