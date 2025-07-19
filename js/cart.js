@@ -1,10 +1,10 @@
 /**
  * CHE COSMETICS - Complete Shopping Cart System
- * With mandatory invoice download and payment proof verification
+ * With invoice download and order processing
  * Updated with special pricing for bulk purchases and enhanced UX
  * Includes robust return-from-PDF notification system
  * Now with automatic PDF download in new tab and invoice emailing
- * Version 2.3 - Fixed PDF return-to-step-2 functionality
+ * Version 2.4 - Removed payment proof requirement
  */
 
 // Cart data structure
@@ -94,11 +94,9 @@ function checkReturnFromInvoice() {
         // Open checkout modal immediately
         openCheckoutModal(true);
 
-        // Navigate to step 2 and show notification
+        // Navigate to step 2
         setTimeout(() => {
             goToStep('2');
-            showCartNotification('Please upload your payment proof to complete your order', 'info');
-            document.getElementById('proof-payment')?.focus();
         }, 300);
     }
 }
@@ -187,25 +185,10 @@ function setupEventListeners() {
         }
     });
 
-    // Enhanced payment proof upload handler with visual feedback
-    const proofInput = document.getElementById('proof-payment');
-    if (proofInput) {
-        proofInput.addEventListener('change', function () {
-            if (this.files.length > 0) {
-                const feedback = this.parentElement.querySelector('.upload-feedback');
-                if (feedback) {
-                    feedback.style.display = 'flex';
-                }
-                showCartNotification('Payment proof selected', 'success');
-            }
-        });
-    }
-
     window.addEventListener('pageshow', function (event) {
         if (event.persisted || performance.navigation.type === 2) {
             const activeStep = document.querySelector('.checkout-step.active');
             if (activeStep && activeStep.classList.contains('step-2')) {
-                showCartNotification('Please upload your payment proof to complete your order', 'info');
                 document.getElementById('proof-payment')?.focus();
             }
         }
@@ -235,12 +218,6 @@ function addInvoiceDownloadButton() {
             <h4>Make Payment</h4>
             <p>Complete the payment using the banking details provided.</p>
         </div>
-        <div class="instruction-step">
-            <i class="fas fa-upload"></i>
-            <h4>Return & Upload</h4>
-            <p>Come back to this page and upload your payment proof below.</p>
-            <p class="note"><i class="fas fa-info-circle"></i> The invoice opens in a new tab so this page remains open</p>
-        </div>
     `;
 
     const downloadBtn = document.createElement('button');
@@ -248,16 +225,8 @@ function addInvoiceDownloadButton() {
     downloadBtn.innerHTML = '<i class="fas fa-file-download"></i> Generate Invoice';
     downloadBtn.addEventListener('click', generatePDFInvoice);
 
-    const paymentDoneBtn = document.createElement('button');
-    paymentDoneBtn.className = 'cta-button payment-done-btn';
-    paymentDoneBtn.innerHTML = '<i class="fas fa-check-circle"></i> I\'ve Made Payment';
-    paymentDoneBtn.addEventListener('click', function () {
-        document.getElementById('proof-payment').click();
-    });
-
     downloadContainer.appendChild(enhancedInstructions);
     downloadContainer.appendChild(downloadBtn);
-    downloadContainer.appendChild(paymentDoneBtn);
 
     const firstStep = step2.querySelector('.payment-step');
     if (firstStep) {
@@ -292,11 +261,9 @@ function validateStepTransition(button, nextStep) {
         }
     }
     else if (currentStep === '2' && nextStep === '3') {
-        // Removed the payment proof requirement check
         const spinner = document.querySelector('.upload-spinner');
         if (spinner) spinner.style.display = 'flex';
 
-        // Process order without payment proof
         processOrderWithoutPayment()
             .then(success => {
                 if (success) {
@@ -308,27 +275,6 @@ function validateStepTransition(button, nextStep) {
     else {
         goToStep(nextStep);
     }
-}
-
-function validateShippingForm() {
-    const requiredFields = ['full-name', 'email', 'phone', 'address', 'city', 'postal-code', 'province'];
-    let isValid = true;
-
-    requiredFields.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        if (!field || !field.value.trim()) {
-            showCartNotification(`Please fill in ${fieldId.replace('-', ' ')}`, 'error');
-            isValid = false;
-        }
-    });
-
-    const emailField = document.getElementById('email');
-    if (emailField && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
-        showCartNotification('Please enter a valid email address', 'error');
-        isValid = false;
-    }
-
-    return isValid;
 }
 
 async function processOrderWithoutPayment() {
@@ -386,6 +332,27 @@ async function processOrderWithoutPayment() {
         const spinner = document.querySelector('.upload-spinner');
         if (spinner) spinner.style.display = 'none';
     }
+}
+
+function validateShippingForm() {
+    const requiredFields = ['full-name', 'email', 'phone', 'address', 'city', 'postal-code', 'province'];
+    let isValid = true;
+
+    requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (!field || !field.value.trim()) {
+            showCartNotification(`Please fill in ${fieldId.replace('-', ' ')}`, 'error');
+            isValid = false;
+        }
+    });
+
+    const emailField = document.getElementById('email');
+    if (emailField && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
+        showCartNotification('Please enter a valid email address', 'error');
+        isValid = false;
+    }
+
+    return isValid;
 }
 
 function goToStep(stepNumber) {
@@ -535,27 +502,6 @@ function generatePDFInvoice() {
             y += 7;
             doc.text(`Reference: ${invoiceNumber}`, 20, y);
 
-            // Set markers for return detection
-            const returnUrl = `${window.location.origin}${window.location.pathname}?fromInvoice=true`;
-            console.log('Return URL:', returnUrl);
-
-            // Enhanced return to site link
-            y += 15;
-            doc.setFontSize(12);
-            doc.setTextColor(239, 93, 168);
-            doc.setFont('helvetica', 'bold');
-            doc.text('PAYMENT INSTRUCTIONS CONTINUED', 105, y, { align: 'center' });
-            y += 7;
-            doc.setFontSize(10);
-            doc.setTextColor(0, 0, 255); // Blue color for link
-            doc.textWithLink('Click here to return to payment upload', 105, y, {
-                align: 'center',
-                url: returnUrl
-            });
-            doc.setTextColor(0, 0, 0); // Reset color
-            y += 7;
-            doc.text('and upload your proof of payment.', 105, y, { align: 'center' });
-
             // Thank you message
             y += 10;
             doc.setFontSize(12);
@@ -586,30 +532,6 @@ function generatePDFInvoice() {
                 downloadBtn.innerHTML = '<i class="fas fa-check-circle"></i> Invoice Downloaded';
                 downloadBtn.classList.add('downloaded');
                 downloadBtn.disabled = true;
-            }
-
-            // Add a prominent "Return to Payment" button
-            const returnContainer = document.querySelector('.invoice-download-container');
-            if (returnContainer) {
-                const existingReturnBtn = returnContainer.querySelector('.return-to-payment-btn');
-                if (!existingReturnBtn) {
-                    const returnBtn = document.createElement('button');
-                    returnBtn.className = 'cta-button return-to-payment-btn';
-                    returnBtn.innerHTML = '<i class="fas fa-arrow-circle-left"></i> Return to Payment Upload';
-                    returnBtn.addEventListener('click', function () {
-                        // Focus on the payment proof upload field
-                        document.getElementById('proof-payment')?.focus();
-                        showCartNotification('Please upload your payment proof', 'info');
-                    });
-
-                    // Insert after the download button
-                    const paymentDoneBtn = returnContainer.querySelector('.payment-done-btn');
-                    if (paymentDoneBtn) {
-                        returnContainer.insertBefore(returnBtn, paymentDoneBtn.nextSibling);
-                    } else {
-                        returnContainer.appendChild(returnBtn);
-                    }
-                }
             }
 
             sendInvoiceEmail();
@@ -956,13 +878,6 @@ style.textContent = `
         color: #888;
         margin-top: 5px;
     }
-    .payment-done-btn {
-        margin-top: 10px;
-        background-color: #4CAF50 !important;
-    }
-    .payment-done-btn:hover {
-        background-color: #3e8e41 !important;
-    }
     .checkout-steps .step.current {
         background: #ef5da8;
         color: white;
@@ -1014,16 +929,6 @@ style.textContent = `
     .email-status.error {
         color: #f44336;
     }
-
-    .return-to-payment-btn {
-    margin-top: 10px;
-    background-color: #2196F3 !important;
-    width: 100%;
-}
-
-.return-to-payment-btn:hover {
-    background-color: #0b7dda !important;
-}
     .upload-feedback {
         margin-top: 10px;
         padding: 10px;
