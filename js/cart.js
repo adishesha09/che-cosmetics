@@ -292,22 +292,12 @@ function validateStepTransition(button, nextStep) {
         }
     }
     else if (currentStep === '2' && nextStep === '3') {
-        const proofInput = document.getElementById('proof-payment');
-
-        if (!invoiceDownloaded) {
-            showCartNotification('Please generate the invoice first', 'error');
-            return;
-        }
-
-        if (!proofInput || proofInput.files.length === 0) {
-            showCartNotification('Please upload proof of payment', 'error');
-            return;
-        }
-
+        // Removed the payment proof requirement check
         const spinner = document.querySelector('.upload-spinner');
         if (spinner) spinner.style.display = 'flex';
 
-        processPaymentProof(proofInput.files[0])
+        // Process order without payment proof
+        processOrderWithoutPayment()
             .then(success => {
                 if (success) {
                     completeOrder();
@@ -341,11 +331,8 @@ function validateShippingForm() {
     return isValid;
 }
 
-async function processPaymentProof(file) {
+async function processOrderWithoutPayment() {
     try {
-        const spinner = document.querySelector('.upload-spinner');
-        if (spinner) spinner.style.display = 'flex';
-
         const customerName = document.getElementById('full-name')?.value || 'Customer';
         const customerEmail = document.getElementById('email')?.value || 'No email provided';
         const customerPhone = document.getElementById('phone')?.value || 'No phone provided';
@@ -377,6 +364,7 @@ async function processPaymentProof(file) {
         orderFormData.append('Subtotal', `R${subtotal.toFixed(2)}`);
         orderFormData.append('Shipping Fee', `R${STANDARD_SHIPPING_FEE.toFixed(2)}`);
         orderFormData.append('Total Amount', `R${total.toFixed(2)}`);
+        orderFormData.append('Payment Status', 'Pending (No proof uploaded)');
 
         const orderResponse = await fetch('https://formsubmit.co/ajax/cheyliasingh3@gmail.com', {
             method: 'POST',
@@ -387,31 +375,12 @@ async function processPaymentProof(file) {
             throw new Error('Failed to submit order details');
         }
 
-        if (file) {
-            const paymentFormData = new FormData();
-            paymentFormData.append('_cc', 'cheyliasingh3@gmail.com');
-            paymentFormData.append('_subject', `Payment Proof for Order ${orderReference.textContent}`);
-            paymentFormData.append('Order Reference', orderReference.textContent);
-            paymentFormData.append('full-name', customerName);
-            paymentFormData.append('email', customerEmail);
-            paymentFormData.append('proof-payment', file);
-
-            const paymentResponse = await fetch('https://formsubmit.co/ajax/cheyliasingh3@gmail.com', {
-                method: 'POST',
-                body: paymentFormData
-            });
-
-            if (!paymentResponse.ok) {
-                throw new Error('Failed to submit payment proof');
-            }
-        }
-
-        showCartNotification('Order and payment proof successfully submitted', 'success');
+        showCartNotification('Order successfully submitted', 'success');
         return true;
 
     } catch (error) {
         console.error('Submission error:', error);
-        showCartNotification('Failed to complete submission. Please try again or contact support.', 'error');
+        showCartNotification('Failed to complete order. Please try again or contact support.', 'error');
         return false;
     } finally {
         const spinner = document.querySelector('.upload-spinner');
