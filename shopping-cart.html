@@ -229,13 +229,22 @@
                             <div class="step-number">2</div>
                             <div class="step-content">
                                 <h4>Upload Proof of Payment</h4>
-                                <p>Upload a screenshot or PDF of your payment confirmation:</p>
+                                <p>Upload a screenshot or PDF of your payment confirmation for order <strong>#<span
+                                            class="order-reference">1234</span></strong>:</p>
                                 <div class="form-group">
                                     <label for="proof-payment">Proof of Payment</label>
-                                    <input type="file" id="proof-payment" name="proof-payment" accept="image/*,.pdf">
+                                    <input type="file" id="proof-payment" name="proof-payment" accept="image/*,.pdf"
+                                        required>
+                                    <p class="upload-hint"><i class="fas fa-info-circle"></i> Max file size: 5MB.
+                                        Accepted formats: JPG, PNG, PDF</p>
+                                </div>
+                                <div class="upload-feedback" style="display: none;">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>File uploaded successfully</span>
                                 </div>
                             </div>
                         </div>
+
 
                         <div class="payment-step">
                             <div class="step-number">3</div>
