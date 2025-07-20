@@ -597,27 +597,6 @@ function generatePDFInvoice() {
             y += 7;
             doc.text(`Reference: ${invoiceNumber}`, 20, y);
 
-            // Set markers for return detection
-            const returnUrl = `${window.location.origin}${window.location.pathname}?fromInvoice=true`;
-            console.log('Return URL:', returnUrl);
-
-            // Enhanced return to site link
-            y += 15;
-            doc.setFontSize(12);
-            doc.setTextColor(239, 93, 168);
-            doc.setFont('helvetica', 'bold');
-            doc.text('PAYMENT INSTRUCTIONS CONTINUED', 105, y, { align: 'center' });
-            y += 7;
-            doc.setFontSize(10);
-            doc.setTextColor(0, 0, 255); // Blue color for link
-            doc.textWithLink('Click here to return to payment upload', 105, y, {
-                align: 'center',
-                url: returnUrl
-            });
-            doc.setTextColor(0, 0, 0); // Reset color
-            y += 7;
-            doc.text('and upload your proof of payment.', 105, y, { align: 'center' });
-
             // Thank you message
             y += 10;
             doc.setFontSize(12);
