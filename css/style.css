@@ -2620,3 +2620,55 @@ footer {
         margin-bottom: 1rem;
     }
 }
+
+
+/* Mobile Cart Styles */
+.mobile-cart {
+    display: none;
+    margin-left: 1rem;
+}
+
+.mobile-cart .cart-link {
+    color: var(--text-color);
+    font-size: 1.2rem;
+    position: relative;
+}
+
+.mobile-cart .cart-count {
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+}
+
+@media (max-width: 768px) {
+    /* Hide desktop cart */
+    .desktop-right .cart-link {
+        display: none;
+    }
+    
+    /* Show mobile cart */
+    .mobile-cart {
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Adjust logo and cart positioning */
+    .logo {
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Ensure burger menu stays on the right */
+    .burger {
+        margin-left: auto;
+    }
+}
