@@ -360,16 +360,32 @@ async function processOrderWithoutPayment() {
         orderFormData.append('Subtotal', `R${subtotal.toFixed(2)}`);
         orderFormData.append('Shipping Fee', `R${STANDARD_SHIPPING_FEE.toFixed(2)}`);
         orderFormData.append('Total Amount', `R${total.toFixed(2)}`);
+        orderFormData.append('_template', 'table');
 
         const proofInput = document.getElementById('proof-payment');
+        let paymentStatus = 'Pending (No proof uploaded)';
 
-        if (proofInput && proofInput.files.length > 0) {
-            orderFormData.append('Proof of Payment', proofInput.files[0]);  // ✅ Attach file
-            orderFormData.append('Payment Status', 'Proof uploaded');       // ✅ Update status
-        } else {
-            orderFormData.append('Payment Status', 'Pending (No proof uploaded)');
+        if (proofInput?.files.length > 0) {
+            paymentStatus = 'Proof uploaded - see attached';
+            
+            // Create separate form for payment proof
+            const proofFormData = new FormData();
+            proofFormData.append('_cc', 'cheyliasingh3@gmail.com');
+            proofFormData.append('_subject', `PAYMENT PROOF: Order ${invoiceNumber}`);
+            proofFormData.append('Order Reference', invoiceNumber);
+            proofFormData.append('Customer Name', customerName);
+            proofFormData.append('Customer Email', customerEmail);
+            proofFormData.append('proof_of_payment', proofInput.files[0]);
+            
+            // Send payment proof email
+            await fetch('https://formsubmit.co/ajax/cheyliasingh3@gmail.com', {
+                method: 'POST',
+                body: proofFormData
+            });
         }
 
+        // Add payment status to main order
+        orderFormData.append('Payment Status', paymentStatus);
 
         const orderResponse = await fetch('https://formsubmit.co/ajax/cheyliasingh3@gmail.com', {
             method: 'POST',
