@@ -277,6 +277,7 @@ function addInvoiceDownloadButton() {
 
 function validateStepTransition(button, nextStep) {
     const currentStep = button.closest('.checkout-step').classList[1].split('-')[1];
+    const spinner = document.querySelector('.upload-spinner');
 
     if (currentStep === '1' && nextStep === '2') {
         if (validateShippingForm()) {
@@ -284,17 +285,35 @@ function validateStepTransition(button, nextStep) {
         }
     }
     else if (currentStep === '2' && nextStep === '3') {
-        // Removed the payment proof requirement check
-        const spinner = document.querySelector('.upload-spinner');
-        if (spinner) spinner.style.display = 'flex';
+        // Disable the button to prevent multiple submissions
+        button.disabled = true;
 
-        // Process order without payment proof
+        // Show spinner
+        if (spinner) {
+            spinner.style.display = 'flex';
+            // Ensure spinner is on top
+            spinner.style.zIndex = '1001';
+        }
+
+        // Process order
         processOrderWithoutPayment()
             .then(success => {
                 if (success) {
                     completeOrder();
                     goToStep(nextStep);
+                } else {
+                    // Re-enable button if failed
+                    button.disabled = false;
                 }
+            })
+            .catch(error => {
+                console.error('Order processing error:', error);
+                showCartNotification('Failed to complete order. Please try again.', 'error');
+                button.disabled = false;
+            })
+            .finally(() => {
+                // Always hide spinner when done
+                if (spinner) spinner.style.display = 'none';
             });
     }
     else {
@@ -1018,27 +1037,31 @@ style.textContent = `
         border-color: #ef5da8;
     }
     .upload-spinner {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255,255,255,0.9);
-        z-index: 1000;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-    .upload-spinner .spinner {
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #ef5da8;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 1s linear infinite;
-        margin-bottom: 15px;
-    }
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.9);
+    z-index: 1000;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.upload-spinner .spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #ef5da8;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
     .special-price-notice {
         color: #ef5da8;
         font-size: 0.9em;
@@ -1090,10 +1113,6 @@ style.textContent = `
         font-size: 0.8em;
         color: #666;
         margin-top: 5px;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
     }
 `;
 document.head.appendChild(style);
