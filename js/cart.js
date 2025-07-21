@@ -721,12 +721,10 @@ function completeOrder() {
     const email = document.getElementById('email')?.value || 'your@email.com';
     if (confirmationEmail) confirmationEmail.textContent = email;
 
-    if (document.querySelector('.step-3.active')) {
-        cart = [];
-        saveCart();
-        updateCartCount();
-        sessionStorage.setItem('suppressCartNotification', 'true');
-    }
+    cart = [];
+    saveCart();
+    updateCartCount();
+    sessionStorage.setItem('suppressCartNotification', 'true');
 
     const continueShoppingBtn = document.querySelector('.continue-shopping-btn');
     if (continueShoppingBtn) {
