@@ -66,4 +66,4 @@ For any issues or suggestions, please open an issue or contact the developer at 
 This project is for Che Cosmetics and is not licensed for reuse or redistribution without permission.
 
 ---
-Developed by [Spectra Studios](spectrastudios.co.za)
+Developed by Spectra Studios
