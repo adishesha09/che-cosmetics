@@ -31,6 +31,7 @@ checosmetics.co.za/
 │   └── style.css             # Website styles
 ├── js/
 │   └── cart.js               # Cart & interactivity
+    └── main.js               # Main javascript file
 ├── images/                   # Product & banner images
 ├── uploads/                  # Proof of payment storage (if applicable)
 ```
