@@ -355,7 +355,7 @@ async function processOrderWithoutPayment() {
         let orderDetails = cart.map(item => {
             const price = calculateItemPrice(item.id, item.quantity);
             return `${item.name} (Qty: ${item.quantity}) - R${price.toFixed(2)}`;
-        }).join('\n');
+        }).join(' | ');
 
         const subtotal = cart.reduce((total, item) => {
             return total + calculateItemPrice(item.id, item.quantity);
