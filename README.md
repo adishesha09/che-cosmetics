@@ -54,7 +54,7 @@ To run the site locally:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/checosmetics.co.za.git
+   git clone https://github.com/adishesha09/checosmetics.co.za.git
    ```
 2. Open `index.html` in a browser.
 
