@@ -20,27 +20,34 @@ Che Cosmetics offers skincare and beauty products infused with love, quality ing
 
 Visit the website here:  [https://checosmetics.co.za](https://checosmetics.co.za)
 
-## Project Structure
+## Project Structure (Not Ordered)
 
 ```bash
 checosmetics.co.za/
-├── index.html                # Home page
-├── shop.html                 # Product listing
-├── cart.html                 # Shopping cart
 ├── css/
 │   └── style.css             # Website styles
 ├── js/
 │   └── cart.js               # Cart & interactivity
     └── main.js               # Main javascript file
 ├── images/                   # Product & banner images
-├── uploads/                  # Proof of payment storage (if applicable)
+├── about.html                # About page
+├── blog.html                 # Beauty blog page
+├── contact.html              # Contact page
+├── index.html                # Home page
+├── privacy.html              # Privacy policy page
+├── products.html             # Product listing
+├── robots.txt            
+├── shopping-cart.html        # Shopping cart
+├── sitemap.xml               # XML based sitemap
+├── thank-you.html            # Thank You page
+├── values.html               # Business values page
 ```
 
 ## Tech Stack
 
 - HTML5
 - CSS3
-- JavaScript (vanilla)
+- JavaScript 
 - [FormSubmit](https://formsubmit.co) – for form handling
 - GitHub Pages – for hosting
 
