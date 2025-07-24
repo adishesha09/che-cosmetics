@@ -2,9 +2,9 @@
 
 Welcome to the source code for [checosmetics.co.za](https://checosmetics.co.za) – the official website for Che Cosmetics, a natural and conscious beauty brand committed to empowering your skin and your confidence.
 
-## About Che Cosmetics
+## About CHE Cosmetics
 
-Che Cosmetics offers skincare and beauty products infused with love, quality ingredients, and a commitment to conscious beauty. Our online store provides seamless access to product information, ordering, and customer support.
+CHE Cosmetics offers skincare and beauty products infused with love, quality ingredients, and a commitment to conscious beauty. Our online store provides seamless access to product information, ordering, and customer support.
 
 ## Website Features
 
@@ -71,7 +71,7 @@ For any issues or suggestions, please open an issue or contact the developer at 
 
 ## License
 
-This project is for Che Cosmetics and is not licensed for reuse or redistribution without permission.
+This project is for CHE Cosmetics and is not licensed for reuse or redistribution without permission.
 
 ---
 Developed by Spectra Studios
