@@ -1,6 +1,6 @@
 # Che Cosmetics – Official Website
 
-Welcome to the source code for [checosmetics.co.za](https://checosmetics.co.za) – the official website for Che Cosmetics, a natural and conscious beauty brand committed to empowering your skin and your confidence.
+Welcome to the source code for [checosmetics.co.za](https://checosmetics.co.za) – the official website for CHE Cosmetics, a natural and conscious beauty brand committed to empowering your skin and your confidence.
 
 ## About CHE Cosmetics
 
