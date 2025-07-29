@@ -385,8 +385,8 @@ async function processOrderWithoutPayment() {
         const proofInput = document.getElementById('proof-payment');
 
         if (proofInput && proofInput.files.length > 0) {
-            orderFormData.append('Proof of Payment', proofInput.files[0]);  // ✅ Attach file
-            orderFormData.append('Payment Status', 'Proof uploaded');       // ✅ Update status
+            orderFormData.append('Proof of Payment', proofInput.files[0]);  
+            orderFormData.append('Payment Status', 'Proof uploaded');       
         } else {
             orderFormData.append('Payment Status', 'Pending (No proof uploaded)');
         }
@@ -414,7 +414,7 @@ async function processOrderWithoutPayment() {
     }
 }
 
-async function sendOrderConfirmationEmail(customerName, customerEmail, orderDetails, subtotal, total) {
+async function sendOrderConfirmationEmail(customerName, customerEmail, orderDetails, subtotal, total, influencerCode) {
     try {
         const emailFormData = new FormData();
         emailFormData.append('_cc', customerEmail); // CC to customer
@@ -426,6 +426,7 @@ async function sendOrderConfirmationEmail(customerName, customerEmail, orderDeta
         emailFormData.append('Subtotal', `R${subtotal.toFixed(2)}`);
         emailFormData.append('Shipping Fee', `R${STANDARD_SHIPPING_FEE.toFixed(2)}`);
         emailFormData.append('Total Amount', `R${total.toFixed(2)}`);
+        emailFormData.append('Influencer Code', influencerCode);
         emailFormData.append('Banking Details', `
         Bank: Capitec Bank
         Account Name: MISS C SINGH
