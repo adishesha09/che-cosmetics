@@ -418,6 +418,7 @@ async function sendOrderConfirmationEmail(customerName, customerEmail, orderDeta
     try {
         const emailFormData = new FormData();
         emailFormData.append('_cc', customerEmail); // CC to customer
+        emailFormData.append('_to', customerEmail); // Primary recipient
         emailFormData.append('_subject', `Your CHE Cosmetics Order: ${orderReference.textContent}`);
         emailFormData.append('Order Reference', orderReference.textContent);
         emailFormData.append('Customer Name', customerName);
