@@ -385,8 +385,8 @@ async function processOrderWithoutPayment() {
         const proofInput = document.getElementById('proof-payment');
 
         if (proofInput && proofInput.files.length > 0) {
-            orderFormData.append('Proof of Payment', proofInput.files[0]);  
-            orderFormData.append('Payment Status', 'Proof uploaded');       
+            orderFormData.append('Proof of Payment', proofInput.files[0]);  // ✅ Attach file
+            orderFormData.append('Payment Status', 'Proof uploaded');       // ✅ Update status
         } else {
             orderFormData.append('Payment Status', 'Pending (No proof uploaded)');
         }
@@ -425,7 +425,6 @@ async function sendOrderConfirmationEmail(customerName, customerEmail, orderDeta
         emailFormData.append('Subtotal', `R${subtotal.toFixed(2)}`);
         emailFormData.append('Shipping Fee', `R${STANDARD_SHIPPING_FEE.toFixed(2)}`);
         emailFormData.append('Total Amount', `R${total.toFixed(2)}`);
-        emailFormData.append('Influencer Code', influencerCode);
         emailFormData.append('Banking Details', `
         Bank: Capitec Bank
         Account Name: MISS C SINGH
@@ -522,7 +521,6 @@ function generatePDFInvoice() {
             const customerName = document.getElementById('full-name')?.value || 'Customer Name';
             const customerEmail = document.getElementById('email')?.value || 'customer@email.com';
             const customerAddress = document.getElementById('address')?.value || 'Customer Address';
-            const influencerCode = document.getElementById('influencer-code')?.value || 'None provided';
 
             doc.text(`Bill To:`, 15, 70);
             doc.text(customerName, 15, 75);
@@ -606,11 +604,6 @@ function generatePDFInvoice() {
             doc.setFontSize(12);
             doc.setTextColor(239, 93, 168);
             doc.text('Thank you for your purchase!', 105, y, { align: 'center' });
-
-            // Add influencer code if provided
-            if (influencerCode && influencerCode !== 'None provided') {
-                doc.text(`Influencer Code: ${influencerCode}`, 15, 90);
-            }
 
             // Generate PDF output
             const pdfOutput = doc.output('blob');
@@ -697,7 +690,6 @@ async function sendInvoiceEmail() {
         emailFormData.append('Subtotal', `R${subtotal.toFixed(2)}`);
         emailFormData.append('Shipping Fee', `R${STANDARD_SHIPPING_FEE.toFixed(2)}`);
         emailFormData.append('Total Amount', `R${total.toFixed(2)}`);
-        emailFormData.append('Influencer Code', influencerCode);
         emailFormData.append('Banking Details', `
         Bank: Capitec Bank
         Account Name: MISS C SINGH
@@ -737,7 +729,7 @@ function completeOrder() {
         updateCartCount();
         sessionStorage.setItem('suppressCartNotification', 'true');
     }
-
+    
     sessionStorage.setItem('suppressCartNotification', 'true');
 
     const continueShoppingBtn = document.querySelector('.continue-shopping-btn');
