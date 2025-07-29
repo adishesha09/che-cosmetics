@@ -426,11 +426,7 @@ async function sendOrderConfirmationEmail(customerName, customerEmail, orderDeta
         emailFormData.append('Subtotal', `R${subtotal.toFixed(2)}`);
         emailFormData.append('Shipping Fee', `R${STANDARD_SHIPPING_FEE.toFixed(2)}`);
         emailFormData.append('Total Amount', `R${total.toFixed(2)}`);
-
-        if (influencerCode && influencerCode !== 'None provided') {
-            emailFormData.append('Influencer Code Used', influencerCode);
-        }
-
+        emailFormData.append('Influencer Code Used', influencerCode);
         emailFormData.append('Banking Details', `
         Bank: Capitec Bank
         Account Name: MISS C SINGH
