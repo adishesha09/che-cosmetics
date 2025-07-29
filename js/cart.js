@@ -365,7 +365,7 @@ async function processOrderWithoutPayment() {
         const total = subtotal + STANDARD_SHIPPING_FEE;
 
         // First send the order confirmation email
-        await sendOrderConfirmationEmail(customerName, customerEmail, orderDetails, subtotal, total);
+        await sendOrderConfirmationEmail(customerName, customerEmail, orderDetails, subtotal, total, influencerCode);
 
         // Then submit to FormSubmit
         const orderFormData = new FormData();
