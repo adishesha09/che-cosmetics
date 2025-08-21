@@ -12,29 +12,6 @@ let cart = JSON.parse(localStorage.getItem('cheCosmeticsCart')) || [];
 let invoiceDownloaded = false;
 const STANDARD_SHIPPING_FEE = 103.50;
 
-// Special pricing configurations
-const SPECIAL_PRICING = {
-    'lipgloss': {
-        singlePrice: 125.00,
-        bulkQuantity: 2,
-        bulkPrice: 200.00
-    },
-    'lipscrub': {
-        singlePrice: 150.00,
-        bulkQuantity: 2,
-        bulkPrice: 250.00
-    },
-    'bodyscrub': {
-        singlePrice: 180.00,
-        bulkQuantity: 2,
-        bulkPrice: 300.00
-    },
-    'face-cream': {
-        singlePrice: 140.00,
-        bulkQuantity: 2,
-        bulkPrice: 250.00
-    }
-};
 
 // DOM Elements
 const cartCountElements = document.querySelectorAll('.cart-count');
@@ -142,22 +119,8 @@ function generateOrderReference() {
 
 
 function calculateItemPrice(productId, quantity) {
-    const specialPricing = SPECIAL_PRICING[productId];
-
-    if (!specialPricing) {
-        const item = cart.find(item => item.id === productId);
-        return item ? parseFloat(item.price.replace('R', '')) * quantity : 0;
-    }
-
-    const { singlePrice, bulkQuantity, bulkPrice } = specialPricing;
-
-    if (quantity >= bulkQuantity) {
-        const bulkSets = Math.floor(quantity / bulkQuantity);
-        const remainingItems = quantity % bulkQuantity;
-        return (bulkSets * bulkPrice) + (remainingItems * singlePrice);
-    }
-
-    return quantity * singlePrice;
+    const item = cart.find(item => item.id === productId);
+    return item ? parseFloat(item.price.replace('R', '')) * quantity : 0;
 }
 
 function setupEventListeners() {
@@ -385,8 +348,8 @@ async function processOrderWithoutPayment() {
         const proofInput = document.getElementById('proof-payment');
 
         if (proofInput && proofInput.files.length > 0) {
-            orderFormData.append('Proof of Payment', proofInput.files[0]);  
-            orderFormData.append('Payment Status', 'Proof uploaded');       
+            orderFormData.append('Proof of Payment', proofInput.files[0]);
+            orderFormData.append('Payment Status', 'Proof uploaded');
         } else {
             orderFormData.append('Payment Status', 'Pending (No proof uploaded)');
         }
@@ -544,22 +507,13 @@ function generatePDFInvoice() {
             let subtotal = 0;
 
             cart.forEach(item => {
-                const itemTotal = calculateItemPrice(item.id, item.quantity);
+                // Calculate item total using standard pricing only
+                const itemPrice = parseFloat(item.price.replace('R', ''));
+                const itemTotal = itemPrice * item.quantity;
                 subtotal += itemTotal;
 
-                const specialPricing = SPECIAL_PRICING[item.id];
-                let priceText = `R${(itemTotal / item.quantity).toFixed(2)}`;
-
-                if (specialPricing && item.quantity >= specialPricing.bulkQuantity) {
-                    const bulkSets = Math.floor(item.quantity / specialPricing.bulkQuantity);
-                    const remainingItems = item.quantity % specialPricing.bulkQuantity;
-
-                    if (remainingItems > 0) {
-                        priceText = `${bulkSets} × R${specialPricing.bulkPrice.toFixed(2)} + ${remainingItems} × R${specialPricing.singlePrice.toFixed(2)}`;
-                    } else {
-                        priceText = `${bulkSets} × R${specialPricing.bulkPrice.toFixed(2)}`;
-                    }
-                }
+                // Standard price display
+                const priceText = `R${itemPrice.toFixed(2)}`;
 
                 doc.text(item.name, 20, y);
                 doc.text(priceText, 100, y);
@@ -731,7 +685,7 @@ function completeOrder() {
         updateCartCount();
         sessionStorage.setItem('suppressCartNotification', 'true');
     }
-    
+
     sessionStorage.setItem('suppressCartNotification', 'true');
 
     const continueShoppingBtn = document.querySelector('.continue-shopping-btn');
@@ -820,25 +774,13 @@ function renderCartItems() {
         const itemElement = document.createElement('div');
         itemElement.className = 'cart-item';
 
-        const itemTotal = calculateItemPrice(item.id, item.quantity);
+        // Calculate item total using standard pricing only
+        const itemPrice = parseFloat(item.price.replace('R', ''));
+        const itemTotal = itemPrice * item.quantity;
         subtotal += itemTotal;
 
-        const specialPricing = SPECIAL_PRICING[item.id];
-        let priceText = `R${(itemTotal / item.quantity).toFixed(2)} each`;
-        let specialPriceText = '';
-
-        if (specialPricing && item.quantity >= specialPricing.bulkQuantity) {
-            const bulkSets = Math.floor(item.quantity / specialPricing.bulkQuantity);
-            const remainingItems = item.quantity % specialPricing.bulkQuantity;
-
-            if (remainingItems > 0) {
-                priceText = `${bulkSets} × R${specialPricing.bulkPrice.toFixed(2)} (${specialPricing.bulkQuantity} items) + ${remainingItems} × R${specialPricing.singlePrice.toFixed(2)}`;
-            } else {
-                priceText = `${bulkSets} × R${specialPricing.bulkPrice.toFixed(2)} (${specialPricing.bulkQuantity} items)`;
-            }
-
-            specialPriceText = `<p class="special-price-notice"><i class="fas fa-tag"></i> Special: Buy ${specialPricing.bulkQuantity} for R${specialPricing.bulkPrice.toFixed(2)}</p>`;
-        }
+        // Standard price text (no special pricing)
+        const priceText = `R${itemPrice.toFixed(2)} each`;
 
         itemElement.innerHTML = `
             <div class="cart-item-image">
@@ -847,7 +789,6 @@ function renderCartItems() {
             <div class="cart-item-details">
                 <h4 class="cart-item-title">${item.name}</h4>
                 <p class="cart-item-price">${priceText}</p>
-                ${specialPriceText}
                 <div class="cart-item-actions">
                     <div class="quantity-selector">
                         <button class="quantity-btn minus" data-id="${item.id}">-</button>
