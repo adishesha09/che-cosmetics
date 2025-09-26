@@ -86,23 +86,54 @@ function initLoader() {
 function initNavigation() {
     const burger = document.querySelector('.burger');
     const mobileNav = document.querySelector('.mobile-nav-links');
+    const body = document.body;
+    
+    // Create overlay element if it doesn't exist
+    let overlay = document.querySelector('.mobile-nav-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'mobile-nav-overlay';
+        document.body.appendChild(overlay);
+    }
+
+    function openMenu() {
+        mobileNav.classList.add('active');
+        overlay.classList.add('active');
+        body.classList.add('menu-open');
+        burger.classList.add('toggle');
+    }
+
+    function closeMenu() {
+        mobileNav.classList.remove('active');
+        overlay.classList.remove('active');
+        body.classList.remove('menu-open');
+        burger.classList.remove('toggle');
+    }
 
     burger.addEventListener('click', function() {
-        mobileNav.classList.toggle('active');
-        burger.classList.toggle('toggle');
-        document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : '';
+        if (mobileNav.classList.contains('active')) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
     });
+
+    // Close menu when clicking overlay
+    overlay.addEventListener('click', closeMenu);
 
     // Close menu when clicking a link
     document.querySelectorAll('.mobile-nav-links a').forEach(link => {
-        link.addEventListener('click', () => {
-            mobileNav.classList.remove('active');
-            burger.classList.remove('toggle');
-            document.body.style.overflow = '';
-        });
+        link.addEventListener('click', closeMenu);
     });
 
-    // Smooth scrolling (existing code remains the same)
+    // Close menu on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mobileNav.classList.contains('active')) {
+            closeMenu();
+        }
+    });
+
+    // Smooth scrolling (keep your existing smooth scroll code)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
@@ -110,6 +141,7 @@ function initNavigation() {
             if (targetId === '#') return;
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
+                closeMenu(); // Close menu when clicking anchor links
                 window.scrollTo({
                     top: targetElement.offsetTop - 100,
                     behavior: 'smooth'

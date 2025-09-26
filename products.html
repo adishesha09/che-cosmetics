@@ -118,10 +118,12 @@
                                 <div class="color-options">
                                     <input type="radio" id="lipgloss-ruby" name="lipgloss-color" value="Ruby Red"
                                         checked>
-                                    <label for="lipgloss-ruby">Digital Lavender</label>
+                                    <label for="lipgloss-ruby">Ruby Red</label>
+
                                     <input type="radio" id="lipgloss-lavender" name="lipgloss-color"
                                         value="Digital Lavender">
-                                    <label for="lipgloss-lavender">Ruby Red</label>
+                                    <label for="lipgloss-lavender">Digital Lavender</label>
+
                                 </div>
                             </div>
                             <div class="product-description">
@@ -344,25 +346,26 @@
                 });
             });
 
-            document.querySelectorAll('input[name="lipscrub-color"]').forEach(radio => {
+            document.querySelectorAll('input[name="lipgloss-color"]').forEach(radio => {
                 radio.addEventListener('change', function () {
                     if (this.checked) {
                         const productImage = this.closest('.product-card').querySelector('.main-product-image');
                         const colorDetails = this.closest('.product-card').querySelector('.color-details');
                         const essenceDetails = this.closest('.product-card').querySelector('.essence-details');
 
-                        if (this.id === 'lipscrub-pink') {
-                            productImage.src = 'images/lipscrub-pink.jpg';
-                            colorDetails.textContent = 'Baby Pink';
-                            essenceDetails.textContent = 'Bubble-gum';
-                        } else if (this.id === 'lipscrub-blue') {
-                            productImage.src = 'images/lipscrub-blue.jpg';
-                            colorDetails.textContent = 'Sky Blue';
+                        if (this.id === 'lipgloss-ruby') {
+                            productImage.src = 'images/lipgloss-pink.jpg'; // Ruby Red main image
+                            colorDetails.textContent = 'Ruby Red colourant, Pink Glitter, Rose Gold Lustre consumable Dusting Colourant';
                             essenceDetails.textContent = 'Strawberry';
+                        } else if (this.id === 'lipgloss-lavender') {
+                            productImage.src = 'images/lipgloss-lavender.jpg';
+                            colorDetails.textContent = 'Digital Lavender colourant, Light Blue Glitter, Pearl (white) Lustre consumable Dusting Colourant';
+                            essenceDetails.textContent = 'Peppermint';
                         }
                     }
                 });
             });
+
 
             // Image carousel functionality
             const productImages = document.querySelectorAll('.product-image img.main-product-image');
@@ -456,4 +459,3 @@
 </body>
 
 </html>
-

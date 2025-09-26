@@ -2337,84 +2337,187 @@ footer {
     display: flex;
 }
 
-/* Mobile navigation */
+/* Improved Mobile Menu Styles */
 @media (max-width: 768px) {
-
-    /* Hide desktop navigation */
-    .desktop-left,
-    .desktop-right {
-        display: none;
+    /* Burger Animation */
+    .burger.toggle .line1 {
+        transform: rotate(-45deg) translate(-5px, 6px);
     }
-
-    /* Show mobile navigation when active */
+    
+    .burger.toggle .line2 {
+        opacity: 0;
+    }
+    
+    .burger.toggle .line3 {
+        transform: rotate(45deg) translate(-5px, -6px);
+    }
+    
+    /* Full-screen Mobile Menu */
     .mobile-nav-links {
-        display: none;
         position: fixed;
         top: 0;
-        right: 0;
-        width: 70%;
+        left: 0;
+        width: 100%;
         height: 100vh;
-        padding-top: 90px;
-        /* account for fixed navbar */
-        background: white;
+        background: rgba(255, 249, 252, 0.98);
+        backdrop-filter: blur(10px);
+        display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: flex-start;
-        padding-bottom: 2rem;
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
-        box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
-        z-index: 99;
-        overflow-y: auto;
+        justify-content: center;
+        transform: translateY(-100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+        padding: 2rem;
+        opacity: 0;
+        visibility: hidden;
     }
-
-    /* Mobile menu link styling */
-    .mobile-nav-links a {
-        color: var(--text-color) !important;
-        /* Default color (black) */
-        text-decoration: none;
-        font-weight: 500;
-        transition: var(--transition);
-        display: block;
-        padding: 0.5rem 0;
-    }
-
-    /* Hover/active state */
-    .mobile-nav-links a:hover,
-    .mobile-nav-links a:focus {
-        color: var(--primary-color) !important;
-        /* Vibrant pink (#ef5da8) */
-    }
-
-    /* Icon styling */
-    .mobile-nav-links a i {
-        color: var(--primary-color);
-        margin-right: 0.5rem;
-        font-size: 1.1rem;
-        transition: var(--transition);
-    }
-
+    
     .mobile-nav-links.active {
-        display: flex;
-        /* Show when active */
-        transform: translateX(0);
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
     }
-
+    
+    /* Menu Items Styling */
     .mobile-nav-links li {
         width: 100%;
         text-align: center;
-        padding: 1rem 0;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        margin: 1rem 0;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.4s ease;
+        list-style: none;
     }
+    
+    .mobile-nav-links.active li {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    /* Stagger animation for menu items */
+    .mobile-nav-links.active li:nth-child(1) { transition-delay: 0.1s; }
+    .mobile-nav-links.active li:nth-child(2) { transition-delay: 0.15s; }
+    .mobile-nav-links.active li:nth-child(3) { transition-delay: 0.2s; }
+    .mobile-nav-links.active li:nth-child(4) { transition-delay: 0.25s; }
+    .mobile-nav-links.active li:nth-child(5) { transition-delay: 0.3s; }
+    .mobile-nav-links.active li:nth-child(6) { transition-delay: 0.35s; }
+    .mobile-nav-links.active li:nth-child(7) { transition-delay: 0.4s; }
+    
+    /* Menu Links */
+    .mobile-nav-links a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        font-weight: 600;
+        padding: 1rem 2rem;
+        color: var(--text-color);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-radius: 50px;
+        margin: 0.5rem 0;
+        list-style: none;
+    }
+    
+    .mobile-nav-links a:hover {
+        background-color: var(--primary-color);
+        color: white;
+        transform: scale(1.05);
+    }
+    
+    .mobile-nav-links a i {
+        font-size: 1.5rem;
+        margin-right: 1rem;
+        width: 30px;
+        text-align: center;
+    }
+    
+    /* Cart item special styling */
+    .mobile-nav-links li:last-child a {
+        background-color: var(--primary-color);
+        color: white;
+        margin-top: 2rem;
+        padding: 1.2rem 2rem;
+    }
+    
+    .mobile-nav-links li:last-child a:hover {
+        background-color: var(--secondary-color);
+    }
+    
+    /* Close button style (optional X icon) */
+    .mobile-close-btn {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: var(--text-color);
+        cursor: pointer;
+        z-index: 1000;
+        display: none;
+    }
+    
+    /* Body scroll lock when menu is open */
+    body.menu-open {
+        overflow: hidden;
+    }
+    
+    /* Header z-index adjustment */
+    header {
+        z-index: 1000;
+    }
+}
 
-    /* Cart at the bottom */
-    .mobile-nav-links li:last-child {
-        margin-top: auto;
-        padding: 1.5rem 0;
-        border-top: 1px solid rgba(0, 0, 0, 0.1);
-        background: var(--background-light);
-        border-bottom: none;
+/* Enhanced Burger Button */
+.burger {
+    display: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.burger div {
+    width: 25px;
+    height: 3px;
+    background-color: var(--text-color);
+    margin: 3px 0;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+/* Show burger on mobile */
+@media (max-width: 768px) {
+    .burger {
+        display: flex;
     }
+}
+
+/* Menu Overlay Background */
+.mobile-nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-nav-overlay.active {
+    display: block;
+    opacity: 1;
 }
 
 @media (max-width: 768px) {
