@@ -1599,8 +1599,8 @@ footer {
         margin: 0 auto 2rem auto;
     }
     
+
     .contact-info h2 i {
-        color: var(--primary-color) !important; /* Keep original pink color */
         margin-right: 0.5rem;
     }
 }
