@@ -1590,6 +1590,46 @@ footer {
     color: var(--primary-color);
 }
 
+/* Contact Page Mobile Centering Fix */
+@media (max-width: 1024px) {
+    .contact-info h2 {
+        text-align: center;
+        width: 100%;
+    }
+
+    .contact-info h2 i {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-info {
+        text-align: center;
+    }
+
+    .contact-info h2 {
+        justify-content: center;
+    }
+
+    .info-card {
+        text-align: left;
+        /* Keep card content left-aligned for readability */
+    }
+}
+
+.contact-info h2 span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@media (max-width: 1024px) {
+    .contact-info h2 span {
+        flex-direction: column;
+    }
+}
+
 .info-card {
     display: flex;
     gap: 1.5rem;
@@ -2339,19 +2379,20 @@ footer {
 
 /* Improved Mobile Menu Styles */
 @media (max-width: 768px) {
+
     /* Burger Animation */
     .burger.toggle .line1 {
         transform: rotate(-45deg) translate(-5px, 6px);
     }
-    
+
     .burger.toggle .line2 {
         opacity: 0;
     }
-    
+
     .burger.toggle .line3 {
         transform: rotate(45deg) translate(-5px, -6px);
     }
-    
+
     /* Full-screen Mobile Menu */
     .mobile-nav-links {
         position: fixed;
@@ -2372,13 +2413,13 @@ footer {
         opacity: 0;
         visibility: hidden;
     }
-    
+
     .mobile-nav-links.active {
         transform: translateY(0);
         opacity: 1;
         visibility: visible;
     }
-    
+
     /* Menu Items Styling */
     .mobile-nav-links li {
         width: 100%;
@@ -2389,21 +2430,41 @@ footer {
         transition: all 0.4s ease;
         list-style: none;
     }
-    
+
     .mobile-nav-links.active li {
         opacity: 1;
         transform: translateY(0);
     }
-    
+
     /* Stagger animation for menu items */
-    .mobile-nav-links.active li:nth-child(1) { transition-delay: 0.1s; }
-    .mobile-nav-links.active li:nth-child(2) { transition-delay: 0.15s; }
-    .mobile-nav-links.active li:nth-child(3) { transition-delay: 0.2s; }
-    .mobile-nav-links.active li:nth-child(4) { transition-delay: 0.25s; }
-    .mobile-nav-links.active li:nth-child(5) { transition-delay: 0.3s; }
-    .mobile-nav-links.active li:nth-child(6) { transition-delay: 0.35s; }
-    .mobile-nav-links.active li:nth-child(7) { transition-delay: 0.4s; }
-    
+    .mobile-nav-links.active li:nth-child(1) {
+        transition-delay: 0.1s;
+    }
+
+    .mobile-nav-links.active li:nth-child(2) {
+        transition-delay: 0.15s;
+    }
+
+    .mobile-nav-links.active li:nth-child(3) {
+        transition-delay: 0.2s;
+    }
+
+    .mobile-nav-links.active li:nth-child(4) {
+        transition-delay: 0.25s;
+    }
+
+    .mobile-nav-links.active li:nth-child(5) {
+        transition-delay: 0.3s;
+    }
+
+    .mobile-nav-links.active li:nth-child(6) {
+        transition-delay: 0.35s;
+    }
+
+    .mobile-nav-links.active li:nth-child(7) {
+        transition-delay: 0.4s;
+    }
+
     /* Menu Links */
     .mobile-nav-links a {
         display: flex;
@@ -2419,20 +2480,20 @@ footer {
         margin: 0.5rem 0;
         list-style: none;
     }
-    
+
     .mobile-nav-links a:hover {
         background-color: var(--primary-color);
         color: white;
         transform: scale(1.05);
     }
-    
+
     .mobile-nav-links a i {
         font-size: 1.5rem;
         margin-right: 1rem;
         width: 30px;
         text-align: center;
     }
-    
+
     /* Cart item special styling */
     .mobile-nav-links li:last-child a {
         background-color: var(--primary-color);
@@ -2440,11 +2501,11 @@ footer {
         margin-top: 2rem;
         padding: 1.2rem 2rem;
     }
-    
+
     .mobile-nav-links li:last-child a:hover {
         background-color: var(--secondary-color);
     }
-    
+
     /* Close button style (optional X icon) */
     .mobile-close-btn {
         position: absolute;
@@ -2458,12 +2519,12 @@ footer {
         z-index: 1000;
         display: none;
     }
-    
+
     /* Body scroll lock when menu is open */
     body.menu-open {
         overflow: hidden;
     }
-    
+
     /* Header z-index adjustment */
     header {
         z-index: 1000;
@@ -2538,12 +2599,13 @@ footer {
 }
 
 @media (max-width: 768px) {
-  .mobile-nav-links li:last-child {
-    margin-top: 2rem !important; /* bring it up */
-    padding: 1rem 0;
-    background: none;
-    border-top: none;
-  }
+    .mobile-nav-links li:last-child {
+        margin-top: 2rem !important;
+        /* bring it up */
+        padding: 1rem 0;
+        background: none;
+        border-top: none;
+    }
 }
 
 /* Thank You Page Styles */
@@ -2599,6 +2661,7 @@ footer {
     from {
         transform: translateY(0);
     }
+
     to {
         transform: translateY(-15px);
     }
@@ -2610,19 +2673,19 @@ footer {
         min-height: 60vh;
         padding: 4rem 5%;
     }
-    
+
     .thank-you-container {
         padding: 3rem;
     }
-    
+
     .thank-you-title {
         font-size: 2rem;
     }
-    
+
     .thank-you-message {
         font-size: 1.1rem;
     }
-    
+
     .thank-you-actions {
         flex-direction: column;
         gap: 1rem;
@@ -2633,11 +2696,11 @@ footer {
     .thank-you-container {
         padding: 2rem 1.5rem;
     }
-    
+
     .thank-you-title {
         font-size: 1.8rem;
     }
-    
+
     .thank-you-icon {
         font-size: 3rem;
     }
@@ -2718,7 +2781,7 @@ footer {
     .payment-process-info {
         padding: 1.5rem;
     }
-    
+
     .payment-step {
         margin-bottom: 1rem;
     }
@@ -2753,23 +2816,24 @@ footer {
 }
 
 @media (max-width: 768px) {
+
     /* Hide desktop cart */
     .desktop-right .cart-link {
         display: none;
     }
-    
+
     /* Show mobile cart */
     .mobile-cart {
         display: flex;
         align-items: center;
     }
-    
+
     /* Adjust logo and cart positioning */
     .logo {
         display: flex;
         align-items: center;
     }
-    
+
     /* Ensure burger menu stays on the right */
     .burger {
         margin-left: auto;
