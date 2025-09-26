@@ -366,6 +366,27 @@
                 });
             });
 
+            document.querySelectorAll('input[name="lipscrub-color"]').forEach(radio => {
+                radio.addEventListener('change', function () {
+                    if (this.checked) {
+                        const productImage = this.closest('.product-card').querySelector('.main-product-image');
+                        const colorDetails = this.closest('.product-card').querySelector('.color-details');
+                        const essenceDetails = this.closest('.product-card').querySelector('.essence-details');
+
+                        if (this.id === 'lipscrub-pink') {
+                            productImage.src = 'images/lipscrub-pink.jpg';
+                            colorDetails.textContent = 'Baby Pink colourant';
+                            essenceDetails.textContent = 'Bubble-gum';
+                        } else if (this.id === 'lipscrub-blue') {
+                            productImage.src = 'images/lipscrub-blue.jpg';
+                            colorDetails.textContent = 'Sky Blue colourant';
+                            essenceDetails.textContent = 'Bubble-gum';
+                        }
+                    }
+                });
+            });
+
+
 
             // Image carousel functionality
             const productImages = document.querySelectorAll('.product-image img.main-product-image');
