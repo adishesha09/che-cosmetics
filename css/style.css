@@ -1591,15 +1591,17 @@ footer {
 }
 
 /* Contact Page Mobile Centering Fix */
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
     .contact-info h2 {
-        text-align: center;
+        text-align: center !important;
         width: 100%;
-    }
-
-    .contact-info h2 i {
         display: block;
-        margin-bottom: 0.5rem;
+        margin: 0 auto 2rem auto;
+    }
+    
+    .contact-info h2 i {
+        color: var(--primary-color) !important; /* Keep original pink color */
+        margin-right: 0.5rem;
     }
 }
 
@@ -1624,7 +1626,7 @@ footer {
     gap: 0.5rem;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
     .contact-info h2 span {
         flex-direction: column;
     }
