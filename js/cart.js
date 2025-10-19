@@ -1,19 +1,9 @@
-/**
- * CHE COSMETICS - Complete Shopping Cart System
- * With mandatory invoice download and payment proof verification
- * Updated with special pricing for bulk purchases and enhanced UX
- * Includes robust return-from-PDF notification system
- * Now with automatic PDF download in new tab and invoice emailing
- * Version 2.4 - Immediate order confirmation emails
- */
 
-// Cart data structure
 let cart = JSON.parse(localStorage.getItem('cheCosmeticsCart')) || [];
 let invoiceDownloaded = false;
 const STANDARD_SHIPPING_FEE = 103.50;
 
 
-// DOM Elements
 const cartCountElements = document.querySelectorAll('.cart-count');
 const cartLinkElements = document.querySelectorAll('.cart-link');
 const cartItemsContainer = document.querySelector('.cart-items');
@@ -33,7 +23,6 @@ const confirmationEmail = document.querySelector('.confirmation-email');
 const orderNumber = document.querySelector('.order-number');
 const downloadInvoiceBtn = document.querySelector('.download-invoice');
 
-// Initialize cart when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
     updateCartCount();
     renderCartItems();
@@ -42,24 +31,20 @@ document.addEventListener('DOMContentLoaded', function () {
     addInvoiceDownloadButton();
     checkReturnFromInvoice();
 
-    // Check if we should suppress the empty cart notification
     if (sessionStorage.getItem('suppressCartNotification') === 'true') {
         sessionStorage.removeItem('suppressCartNotification');
     }
 });
 
-// Enhanced return from invoice check with invoice number matching
 function checkReturnFromInvoice() {
     const urlParams = new URLSearchParams(window.location.search);
     const fromInvoice = urlParams.has('fromInvoice') ||
         localStorage.getItem('returningFromInvoice') === 'true';
 
     if (fromInvoice) {
-        // Clean up markers
         localStorage.removeItem('returningFromInvoice');
         history.replaceState(null, '', window.location.pathname);
 
-        // Restore invoice number from local storage
         const savedInvoiceNumber = localStorage.getItem('currentInvoiceNumber');
         if (savedInvoiceNumber && orderReference) {
             orderReference.textContent = savedInvoiceNumber;
@@ -68,10 +53,8 @@ function checkReturnFromInvoice() {
             }
         }
 
-        // Open checkout modal immediately
         openCheckoutModal(true);
 
-        // Navigate to step 2 and show notification
         setTimeout(() => {
             goToStep('2');
             showCartNotification('Please upload your payment proof to complete your order', 'info');
@@ -99,13 +82,11 @@ function generateOrderReference() {
     const orderRefElements = document.querySelectorAll('.order-reference');
     if (!orderRefElements.length) return;
 
-    // Generate a new number only if one doesn't exist
     if (!orderRefElements[0].textContent || orderRefElements[0].textContent === '1234') {
         const timestamp = Date.now().toString().slice(-4);
         const randomNum = Math.floor(100 + Math.random() * 900);
         const invoiceNumber = `CHE-${timestamp}${randomNum}`;
 
-        // Update ALL elements with class 'order-reference'
         orderRefElements.forEach(el => {
             el.textContent = invoiceNumber;
         });
@@ -160,7 +141,6 @@ function setupEventListeners() {
         }
     });
 
-    // Enhanced payment proof upload handler with visual feedback
     const proofInput = document.getElementById('proof-payment');
     if (proofInput) {
         proofInput.addEventListener('change', function () {
@@ -248,24 +228,19 @@ function validateStepTransition(button, nextStep) {
         }
     }
     else if (currentStep === '2' && nextStep === '3') {
-        // Disable the button to prevent multiple submissions
         button.disabled = true;
 
-        // Show spinner
         if (spinner) {
             spinner.style.display = 'flex';
-            // Ensure spinner is on top
             spinner.style.zIndex = '1001';
         }
 
-        // Process order
         processOrderWithoutPayment()
             .then(success => {
                 if (success) {
                     completeOrder();
                     goToStep(nextStep);
                 } else {
-                    // Re-enable button if failed
                     button.disabled = false;
                 }
             })
@@ -275,7 +250,6 @@ function validateStepTransition(button, nextStep) {
                 button.disabled = false;
             })
             .finally(() => {
-                // Always hide spinner when done
                 if (spinner) spinner.style.display = 'none';
             });
     }
@@ -327,10 +301,8 @@ async function processOrderWithoutPayment() {
 
         const total = subtotal + STANDARD_SHIPPING_FEE;
 
-        // First send the order confirmation email
         await sendOrderConfirmationEmail(customerName, customerEmail, orderDetails, subtotal, total, influencerCode);
 
-        // Then submit to FormSubmit
         const orderFormData = new FormData();
         orderFormData.append('_cc', 'cheyliasingh3@gmail.com');
         orderFormData.append('_subject', `New Order: ${orderReference.textContent}`);
@@ -380,8 +352,8 @@ async function processOrderWithoutPayment() {
 async function sendOrderConfirmationEmail(customerName, customerEmail, orderDetails, subtotal, total, influencerCode) {
     try {
         const emailFormData = new FormData();
-        emailFormData.append('_cc', customerEmail); // CC to customer
-        emailFormData.append('_to', customerEmail); // Primary recipient
+        emailFormData.append('_cc', customerEmail);
+        emailFormData.append('_to', customerEmail);
         emailFormData.append('_subject', `Your CHE Cosmetics Order: ${orderReference.textContent}`);
         emailFormData.append('Order Reference', orderReference.textContent);
         emailFormData.append('Customer Name', customerName);
@@ -413,7 +385,6 @@ async function sendOrderConfirmationEmail(customerName, customerEmail, orderDeta
         console.log('Order confirmation email sent successfully');
     } catch (error) {
         console.error('Email sending error:', error);
-        // Don't fail the whole order if email fails
     }
 }
 
@@ -459,7 +430,6 @@ function generatePDFInvoice() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // Invoice header
             doc.setFontSize(22);
             doc.setTextColor(239, 93, 168);
             doc.text('CHE COSMETICS', 105, 20, { align: 'center' });
@@ -468,12 +438,10 @@ function generatePDFInvoice() {
             doc.setTextColor(100, 100, 100);
             doc.text('Tel: +27 66 207 4523 | Email: cheyliasingh3@gmail.com', 105, 32, { align: 'center' });
 
-            // Invoice title
             doc.setFontSize(18);
             doc.setTextColor(0, 0, 0);
             doc.text('INVOICE', 105, 45, { align: 'center' });
 
-            // Invoice details
             const invoiceNumber = orderReference.textContent;
             localStorage.setItem('currentInvoiceNumber', invoiceNumber);
             localStorage.setItem('returningFromInvoice', 'true');
@@ -482,7 +450,6 @@ function generatePDFInvoice() {
             doc.text(`Invoice #: ${invoiceNumber}`, 15, 55);
             doc.text(`Date: ${new Date().toLocaleDateString()}`, 15, 60);
 
-            // Customer details
             const customerName = document.getElementById('full-name')?.value || 'Customer Name';
             const customerEmail = document.getElementById('email')?.value || 'customer@email.com';
             const customerAddress = document.getElementById('address')?.value || 'Customer Address';
@@ -492,7 +459,6 @@ function generatePDFInvoice() {
             doc.text(customerEmail, 15, 80);
             doc.text(customerAddress, 15, 85);
 
-            // Table header
             doc.setFillColor(239, 93, 168);
             doc.setTextColor(255, 255, 255);
             doc.rect(15, 95, 180, 8, 'F');
@@ -501,18 +467,15 @@ function generatePDFInvoice() {
             doc.text('Qty', 140, 100);
             doc.text('Total', 170, 100);
 
-            // Table rows
             doc.setTextColor(0, 0, 0);
             let y = 110;
             let subtotal = 0;
 
             cart.forEach(item => {
-                // Calculate item total using standard pricing only
                 const itemPrice = parseFloat(item.price.replace('R', ''));
                 const itemTotal = itemPrice * item.quantity;
                 subtotal += itemTotal;
 
-                // Standard price display
                 const priceText = `R${itemPrice.toFixed(2)}`;
 
                 doc.text(item.name, 20, y);
@@ -522,7 +485,6 @@ function generatePDFInvoice() {
                 y += 7;
             });
 
-            // Totals
             y += 10;
             doc.setFontSize(12);
             doc.text(`Subtotal: R${subtotal.toFixed(2)}`, 150, y);
@@ -536,7 +498,6 @@ function generatePDFInvoice() {
             doc.text(`Total: R${total.toFixed(2)}`, 150, y);
             doc.setFont('helvetica', 'normal');
 
-            // Payment instructions
             y += 15;
             doc.setFontSize(10);
             doc.setTextColor(239, 93, 168);
@@ -555,13 +516,11 @@ function generatePDFInvoice() {
             y += 7;
             doc.text(`Reference: ${invoiceNumber}`, 20, y);
 
-            // Thank you message
             y += 10;
             doc.setFontSize(12);
             doc.setTextColor(239, 93, 168);
             doc.text('Thank you for your purchase!', 105, y, { align: 'center' });
 
-            // Generate PDF output
             const pdfOutput = doc.output('blob');
             const pdfUrl = URL.createObjectURL(pdfOutput);
 
@@ -579,7 +538,6 @@ function generatePDFInvoice() {
             invoiceDownloaded = true;
             showCartNotification('Invoice downloaded successfully', 'success');
 
-            // Update the download button
             const downloadBtn = document.querySelector('.invoice-download-btn');
             if (downloadBtn) {
                 downloadBtn.innerHTML = '<i class="fas fa-check-circle"></i> Invoice Downloaded';
@@ -587,7 +545,6 @@ function generatePDFInvoice() {
                 downloadBtn.disabled = true;
             }
 
-            // Add a prominent "Return to Payment" button
             const returnContainer = document.querySelector('.invoice-download-container');
             if (returnContainer) {
                 const existingReturnBtn = returnContainer.querySelector('.return-to-payment-btn');
@@ -596,12 +553,10 @@ function generatePDFInvoice() {
                     returnBtn.className = 'cta-button return-to-payment-btn';
                     returnBtn.innerHTML = '<i class="fas fa-arrow-circle-left"></i> Return to Payment Upload';
                     returnBtn.addEventListener('click', function () {
-                        // Focus on the payment proof upload field
                         document.getElementById('proof-payment')?.focus();
                         showCartNotification('Please upload your payment proof', 'info');
                     });
 
-                    // Insert after the download button
                     const paymentDoneBtn = returnContainer.querySelector('.payment-done-btn');
                     if (paymentDoneBtn) {
                         returnContainer.insertBefore(returnBtn, paymentDoneBtn.nextSibling);
@@ -774,12 +729,10 @@ function renderCartItems() {
         const itemElement = document.createElement('div');
         itemElement.className = 'cart-item';
 
-        // Calculate item total using standard pricing only
         const itemPrice = parseFloat(item.price.replace('R', ''));
         const itemTotal = itemPrice * item.quantity;
         subtotal += itemTotal;
 
-        // Standard price text (no special pricing)
         const priceText = `R${itemPrice.toFixed(2)} each`;
 
         itemElement.innerHTML = `
@@ -871,7 +824,6 @@ function showCartNotification(message, type = 'success') {
     }, 3000);
 }
 
-// Add styles for notifications and new elements
 const style = document.createElement('style');
 style.textContent = `
     .cart-notification {
