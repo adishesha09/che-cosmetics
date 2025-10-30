@@ -1,4 +1,3 @@
-/* Base Styles & Reset */
 * {
     margin: 0;
     padding: 0;
@@ -7,21 +6,18 @@
 
 :root {
     --primary-color: #ef5da8;
-    /* Vibrant pink from the logo */
+
     --secondary-color: #000000;
-    /* Black from the logo */
+
     --accent-color: #ffc7e0;
-    /* Light pink for hover accents */
+
     --text-color: #000000;
-    /* Jet black for strong contrast */
+
     --light-text: #ffffff;
     --background-light: #fff9fc;
-    /* Slight pink-tinted white */
+
     --transition: all 0.3s ease;
 }
-
-/* Cookie banner HTML is not present in the site; styles removed to reduce CSS size.
-   JS gracefully checks for the elements before using them. */
 
 body {
     font-family: 'Montserrat', sans-serif;
@@ -35,7 +31,6 @@ body {
     max-width: 100vw;
 }
 
-/* Typography */
 h1,
 h2,
 h3,
@@ -44,7 +39,6 @@ h4 {
     font-weight: 600;
 }
 
-/* Loader Styles */
 .loader {
     position: fixed;
     top: 0;
@@ -97,7 +91,6 @@ h4 {
     }
 }
 
-/* Header & Navigation */
 header {
     position: fixed;
     top: 0;
@@ -162,24 +155,23 @@ nav {
     transition: var(--transition);
 }
 
-/* Hero Section */
 .hero {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Add this to center horizontally */
+
     padding: 0 5%;
     padding-top: 100px;
     position: relative;
     overflow: hidden;
     text-align: center;
-    /* Add this to center text */
+
 }
 
 .hero-logo {
     max-width: 300px;
-    /* Adjust as needed */
+
     height: auto;
     margin-bottom: 20px;
 }
@@ -187,15 +179,15 @@ nav {
 @media (max-width: 768px) {
     .hero-logo {
         max-width: 200px;
-        /* Smaller on mobile */
+
     }
 }
 
 .hero-content {
     max-width: 800px;
-    /* Add a max-width for better readability */
+
     margin: 0 auto;
-    /* Center the content block */
+
     padding: 2rem;
     animation: fadeIn 1s ease;
 }
@@ -217,8 +209,6 @@ nav {
     position: relative;
     height: 80vh;
 }
-
-
 
 @keyframes slideInLeft {
     from {
@@ -244,7 +234,6 @@ nav {
     }
 }
 
-/* Button Styles */
 .cta-button,
 .secondary-button {
     display: inline-block;
@@ -280,7 +269,6 @@ nav {
     transform: translateY(-3px);
 }
 
-/* Sections */
 section {
     padding: 6rem 5%;
 }
@@ -312,7 +300,7 @@ section {
         min-height: 100vh;
         padding: 0 5%;
         padding-top: 90px;
-        /* Matches navbar height */
+
         box-sizing: border-box;
         position: relative;
     }
@@ -320,7 +308,7 @@ section {
     body.homepage .hero-content {
         padding: 1rem;
         margin-top: 40px;
-        /* Shift content below navbar */
+
     }
 
     body.homepage .hero-logo {
@@ -332,7 +320,6 @@ section {
     }
 }
 
-/* About Section */
 .about {
     display: flex;
     align-items: center;
@@ -376,8 +363,6 @@ section {
     margin: 1rem 0;
 }
 
-
-/* Value Items */
 .value-item {
     text-align: center;
     padding: 2rem;
@@ -392,7 +377,6 @@ section {
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
 }
 
-/* Newsletter */
 .newsletter {
     text-align: center;
     background-color: white;
@@ -433,7 +417,6 @@ section {
     transform: translateY(-2px);
 }
 
-/* Responsive Design */
 @media (max-width: 1024px) {
     .hero-title {
         font-size: 3rem;
@@ -523,7 +506,6 @@ section {
     }
 }
 
-/* Footer Styles */
 footer {
     background-color: var(--secondary-color);
     color: var(--light-text);
@@ -620,10 +602,6 @@ footer {
     transform: translateY(-3px);
 }
 
-/* Social Icons using Unicode */
-/* Inline icon helper classes not used — the markup uses Font Awesome classes (e.g. fab fa-instagram).
-   Removing to avoid duplication. */
-
 .footer-bottom {
     text-align: center;
     padding-top: 3rem;
@@ -651,7 +629,6 @@ footer {
     color: var(--accent-color);
 }
 
-/* Responsive Footer */
 @media (max-width: 768px) {
     .footer-content {
         grid-template-columns: 1fr;
@@ -668,21 +645,18 @@ footer {
     }
 }
 
-
-/* Font Awesome Icons */
 .fa,
 .fas,
 .far,
 .fab {
     margin-right: 0.5rem;
-    /* Add space after icons */
+
     vertical-align: middle;
-    /* Align icons with text */
+
     font-size: 1.1em;
-    /* Slightly larger for visibility */
+
 }
 
-/* Navbar Icon Spacing */
 .nav-links a i {
     margin-right: 0.4rem;
     font-size: 1.2rem;
@@ -695,15 +669,13 @@ footer {
     transform: scale(1.1);
 }
 
-/* Button Icon Styling */
 .cta-button i,
 .secondary-button i {
     margin-left: 0.5rem;
-    /* Space between text and icon */
+
     font-size: 1.2rem;
 }
 
-/* Section Titles with Icons */
 .section-title i {
     color: var(--primary-color);
     margin-right: 0.6rem;
@@ -711,7 +683,6 @@ footer {
     vertical-align: middle;
 }
 
-/* Footer Social Icons */
 .social-links a i {
     font-size: 1.6rem;
     margin-right: 0;
@@ -724,14 +695,12 @@ footer {
     transform: scale(1.2);
 }
 
-/* Contact Info Icons */
 .contact-info li i {
     margin-right: 0.6rem;
     color: var(--accent-color);
     font-size: 1.2rem;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
     .nav-links a i {
         font-size: 1.4rem;
@@ -747,9 +716,6 @@ footer {
     }
 }
 
-/* Add to the existing CSS */
-
-/* Products Grid Layout */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -827,7 +793,6 @@ footer {
     margin-bottom: 0.5rem;
 }
 
-/* Image Carousel Modal */
 .carousel-modal {
     display: none;
     position: fixed;
@@ -943,7 +908,6 @@ footer {
     margin-right: 5px;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .products-grid {
         grid-template-columns: 1fr;
@@ -996,8 +960,6 @@ footer {
     box-shadow: 0 0 0 2px rgba(239, 93, 168, 0.3);
 }
 
-
-/* About Page Specific Styles */
 .about-hero {
     min-height: 60vh;
     display: flex;
@@ -1084,7 +1046,6 @@ footer {
     transform: translateY(-3px);
 }
 
-/* Responsive Team Section */
 @media (max-width: 1024px) {
 
     .team-member,
@@ -1124,7 +1085,6 @@ footer {
     }
 }
 
-/* Values Page Specific Styles */
 .values-hero {
     min-height: 60vh;
     display: flex;
@@ -1262,7 +1222,6 @@ footer {
     transform: scale(1.05);
 }
 
-/* Responsive Values Page */
 @media (max-width: 1024px) {
     .promise-content {
         flex-direction: column;
@@ -1300,7 +1259,6 @@ footer {
     }
 }
 
-/* Products Page - Coming Soon Styles */
 .coming-soon {
     min-height: 70vh;
     display: flex;
@@ -1344,7 +1302,6 @@ footer {
     }
 }
 
-/* Responsive Coming Soon */
 @media (max-width: 768px) {
     .coming-soon {
         min-height: 60vh;
@@ -1366,7 +1323,6 @@ footer {
     }
 }
 
-/* Privacy Policy Specific Styles */
 .privacy-hero {
     min-height: 40vh;
     display: flex;
@@ -1436,7 +1392,6 @@ footer {
     font-style: normal;
 }
 
-/* Responsive Privacy Policy */
 @media (max-width: 768px) {
     .privacy-hero {
         min-height: 30vh;
@@ -1470,7 +1425,6 @@ footer {
     }
 }
 
-/* Contact Page Specific Styles */
 .contact-hero {
     min-height: 50vh;
     display: flex;
@@ -1503,7 +1457,6 @@ footer {
     color: var(--primary-color);
 }
 
-/* Contact Page Mobile Centering Fix */
 @media (max-width: 768px) {
     .contact-info h2 {
         text-align: center !important;
@@ -1511,7 +1464,6 @@ footer {
         display: block;
         margin: 0 auto 2rem auto;
     }
-
 
     .contact-info h2 i {
         margin-right: 0.5rem;
@@ -1529,7 +1481,7 @@ footer {
 
     .info-card {
         text-align: left;
-        /* Keep card content left-aligned for readability */
+
     }
 }
 
@@ -1738,7 +1690,7 @@ footer {
 
 .faq-item.active .faq-answer {
     max-height: 500px;
-    /* Adjust based on your longest answer */
+
     padding: 0 1.5rem 1.5rem;
 }
 
@@ -1756,7 +1708,6 @@ footer {
     text-decoration: underline;
 }
 
-/* Responsive Contact Page */
 @media (max-width: 1024px) {
     .contact-container {
         grid-template-columns: 1fr;
@@ -1808,7 +1759,6 @@ footer {
     }
 }
 
-/* Cart Section Styles */
 .cart-section {
     padding: 6rem 5%;
     background-color: var(--background-light);
@@ -1898,7 +1848,6 @@ footer {
     font-size: 1.1rem;
 }
 
-/* Cart Item Styles */
 .cart-item {
     display: flex;
     gap: 1.5rem;
@@ -1998,7 +1947,6 @@ footer {
     font-size: 0.9rem;
 }
 
-/* Checkout Modal Styles */
 .checkout-modal {
     display: none;
     position: fixed;
@@ -2224,7 +2172,6 @@ footer {
     margin-top: 2rem;
 }
 
-/* Responsive Styles */
 @media (max-width: 1024px) {
     .cart-container {
         flex-direction: column;
@@ -2280,22 +2227,16 @@ footer {
     }
 }
 
-/* Mobile Menu Styles */
-/* Hide mobile menu by default */
 .mobile-nav-links {
     display: none;
 }
 
-/* Desktop navigation */
 .desktop-left,
 .desktop-right {
     display: flex;
 }
 
-/* Improved Mobile Menu Styles */
 @media (max-width: 768px) {
-
-    /* Burger Animation */
     .burger.toggle .line1 {
         transform: rotate(-45deg) translate(-5px, 6px);
     }
@@ -2308,7 +2249,6 @@ footer {
         transform: rotate(45deg) translate(-5px, -6px);
     }
 
-    /* Full-screen Mobile Menu */
     .mobile-nav-links {
         position: fixed;
         top: 0;
@@ -2335,7 +2275,6 @@ footer {
         visibility: visible;
     }
 
-    /* Menu Items Styling */
     .mobile-nav-links li {
         width: 100%;
         text-align: center;
@@ -2351,7 +2290,6 @@ footer {
         transform: translateY(0);
     }
 
-    /* Stagger animation for menu items */
     .mobile-nav-links.active li:nth-child(1) {
         transition-delay: 0.1s;
     }
@@ -2380,7 +2318,6 @@ footer {
         transition-delay: 0.4s;
     }
 
-    /* Menu Links */
     .mobile-nav-links a {
         display: flex;
         align-items: center;
@@ -2409,7 +2346,6 @@ footer {
         text-align: center;
     }
 
-    /* Cart item special styling */
     .mobile-nav-links li:last-child a {
         background-color: var(--primary-color);
         color: white;
@@ -2421,20 +2357,15 @@ footer {
         background-color: var(--secondary-color);
     }
 
-    /* Optional mobile close button is not used by current markup; handled via overlay click. */
-
-    /* Body scroll lock when menu is open */
     body.menu-open {
         overflow: hidden;
     }
 
-    /* Header z-index adjustment */
     header {
         z-index: 1000;
     }
 }
 
-/* Enhanced Burger Button */
 .burger {
     display: none;
     cursor: pointer;
@@ -2458,14 +2389,12 @@ footer {
     border-radius: 2px;
 }
 
-/* Show burger on mobile */
 @media (max-width: 768px) {
     .burger {
         display: flex;
     }
 }
 
-/* Menu Overlay Background */
 .mobile-nav-overlay {
     display: none;
     position: fixed;
@@ -2493,25 +2422,24 @@ footer {
 @media (max-width: 768px) {
     .mobile-nav-links {
         top: 70px;
-        /* Bring the menu higher */
+
         height: calc(100vh - 70px);
-        /* Adjust height to match new top */
+
         overflow-y: auto;
-        /* Enable scrolling if content overflows */
+
     }
 }
 
 @media (max-width: 768px) {
     .mobile-nav-links li:last-child {
         margin-top: 2rem !important;
-        /* bring it up */
+
         padding: 1rem 0;
         background: none;
         border-top: none;
     }
 }
 
-/* Thank You Page Styles */
 .thank-you-section {
     min-height: 70vh;
     display: flex;
@@ -2559,7 +2487,6 @@ footer {
     margin-top: 2rem;
 }
 
-/* Animation for the checkmark icon */
 @keyframes bounce {
     from {
         transform: translateY(0);
@@ -2570,7 +2497,6 @@ footer {
     }
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .thank-you-section {
         min-height: 60vh;
@@ -2609,7 +2535,6 @@ footer {
     }
 }
 
-/* Payment Process Info Styles */
 .payment-process-info {
     background-color: white;
     border-radius: 15px;
@@ -2690,8 +2615,6 @@ footer {
     }
 }
 
-
-/* Mobile Cart Styles */
 .mobile-cart {
     display: none;
     margin-left: 1rem;
@@ -2719,25 +2642,20 @@ footer {
 }
 
 @media (max-width: 768px) {
-
-    /* Hide desktop cart */
     .desktop-right .cart-link {
         display: none;
     }
 
-    /* Show mobile cart */
     .mobile-cart {
         display: flex;
         align-items: center;
     }
 
-    /* Adjust logo and cart positioning */
     .logo {
         display: flex;
         align-items: center;
     }
 
-    /* Ensure burger menu stays on the right */
     .burger {
         margin-left: auto;
     }
